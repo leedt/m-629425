@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { PhoneOff, Phone, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,11 +16,11 @@ export default function InterruptWidget() {
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs text-muted-foreground whitespace-nowrap">Is this response helpful?</span>
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full bg-gray-100 hover:bg-gray-200">
-              👍
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full bg-slate-100 hover:bg-slate-200 opacity-80">
+              <span className="text-slate-600">👍</span>
             </Button>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full bg-gray-100 hover:bg-gray-200">
-              👎
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full bg-slate-100 hover:bg-slate-200 opacity-80">
+              <span className="text-slate-600">👎</span>
             </Button>
           </div>
         </div>
