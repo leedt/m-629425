@@ -5,6 +5,7 @@ import HeroSection from "@/components/HeroSection";
 import BookingForm from "@/components/BookingForm";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import ChatWidget from "@/components/ChatWidget";
+import InterruptWidget from "@/components/InterruptWidget";
 import ApartmentCard, { ApartmentProps } from "@/components/ApartmentCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -252,5 +253,6 @@ export default function Index() {
       
       <Footer />
       <ChatWidget />
+      <InterruptWidget />
     </div>;
 }
