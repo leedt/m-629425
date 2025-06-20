@@ -11,8 +11,8 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      sender: "Jessica",
-      text: "Hello! I'm Jessica, your luxury villa consultant. What's your name?",
+      sender: "Morgan",
+      text: "Hello! I'm Morgan, your ACME Realty virtual agent. What's your name?",
       timestamp: new Date(),
       isConsultant: true
     }
@@ -34,7 +34,7 @@ export default function ChatWidget() {
       setTimeout(() => {
         const response = {
           id: messages.length + 2,
-          sender: "Jessica",
+          sender: "Morgan",
           text: "Thank you! I'd be happy to help you find the perfect luxury villa. What type of property are you looking for?",
           timestamp: new Date(),
           isConsultant: true
@@ -64,18 +64,18 @@ export default function ChatWidget() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm pt-16">
       <div className="bg-white dark:bg-card rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-primary to-primary/80 p-4 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                <span className="text-sm font-semibold">J</span>
+                <span className="text-sm font-semibold">M</span>
               </div>
               <div>
-                <h3 className="font-semibold">Jessica</h3>
-                <p className="text-xs opacity-90">Luxury Villa Consultant</p>
+                <h3 className="font-semibold">Morgan</h3>
+                <p className="text-xs opacity-90">ACME Realty Virtual Agent</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
