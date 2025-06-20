@@ -2,12 +2,17 @@ import { useState } from "react";
 import { X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+
 export default function InterruptWidget() {
   const [isVisible, setIsVisible] = useState(true);
+
   if (!isVisible) {
     return null;
   }
-  return <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-40">
+
+  return (
+    <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-[100]">
+      
       <div className="bg-white dark:bg-card rounded-2xl shadow-2xl p-4 w-64 border">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm text-muted-foreground">Is this response helpful?</span>
@@ -47,5 +52,6 @@ export default function InterruptWidget() {
           Powered by
         </div>
       </div>
-    </div>;
+    </div>
+  );
 }
