@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { PhoneOff, Phone, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ export default function InterruptWidget() {
       
       <div className="bg-white dark:bg-card rounded-2xl shadow-2xl p-4 w-64 border">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm text-muted-foreground">Is this response helpful?</span>
+          <span className="text-xs text-muted-foreground whitespace-nowrap">Is this response helpful?</span>
           <div className="flex items-center space-x-2">
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full bg-gray-100 hover:bg-gray-200">
               👍
