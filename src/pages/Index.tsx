@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -139,7 +138,7 @@ export default function Index() {
                 </div>
                 <div className="absolute -top-6 -right-6 w-1/2 rounded-2xl overflow-hidden shadow-xl">
                   <img 
-                    src="https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=400&h=300&fit=crop"
+                    src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=400&h=300&fit=crop"
                     alt="Pool and garden view" 
                     className="w-full h-full object-cover"
                   />
