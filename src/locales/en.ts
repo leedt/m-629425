@@ -1,22 +1,23 @@
+
 export const en = {
   nav: {
     home: "Home",
-    apartments: "Apartments",
+    apartments: "Homes",
     amenities: "Amenities",
     gallery: "Gallery",
     contact: "Contact",
     bookNow: "Book Now"
   },
   hero: {
-    subtitle: "BEACHFRONT LUXURY ACCOMMODATION",
-    title: "Experience Seaside Tranquility",
-    description: "Discover our exclusive collection of luxury beachfront apartments and hotel rooms, offering unparalleled comfort and breathtaking sea views.",
+    subtitle: "LUXURY CALIFORNIA LIVING",
+    title: "Discover Suburban Paradise",
+    description: "Experience the perfect blend of modern luxury and California charm in our exclusive collection of premium suburban homes and vacation rentals.",
     bookStay: "Book Your Stay",
-    exploreApartments: "Explore Apartments",
+    exploreApartments: "Explore Homes",
     scrollDown: "Scroll Down"
   },
   footer: {
-    description: "Luxurious beachfront apartments and hotel rooms with stunning sea views, offering the perfect blend of comfort and elegance for your dream vacation.",
+    description: "Premium vacation homes in California's most desirable suburbs, offering modern luxury amenities, beautiful gardens, and the perfect setting for your dream getaway.",
     quickLinks: "Quick Links",
     contact: "Contact",
     newsletter: "Newsletter",
@@ -39,73 +40,73 @@ export const en = {
   },
   testimonials: {
     title: "What Our Guests Say",
-    description: "Discover why our guests keep coming back to MareSereno for their seaside getaways."
+    description: "Discover why our guests keep returning to experience the best of California suburban luxury."
   },
   notFound: {
     title: "Page Not Found",
-    description: "We couldn't find the page you were looking for. Perhaps you took a wrong turn in paradise?",
+    description: "We couldn't find the page you were looking for. Perhaps you took a wrong turn on your way to paradise?",
     returnHome: "Return Home"
   },
   home: {
     welcome: {
-      subtitle: "Welcome to MareSereno",
-      title: "Luxury Seaside Accommodations",
-      description1: "Nestled on the pristine Mediterranean coastline, MareSereno offers an exquisite collection of luxury apartments and hotel rooms. Our beachfront accommodations combine elegant design with modern comfort, creating the perfect setting for an unforgettable seaside getaway.",
-      description2: "Whether you're seeking a romantic escape, a family vacation, or a peaceful retreat, our diverse range of accommodations caters to every preference and need. Each space is thoughtfully designed to provide panoramic sea views and direct beach access.",
+      subtitle: "Welcome to California Luxury",
+      title: "Premium Suburban Retreats",
+      description1: "Nestled in California's most desirable neighborhoods, our collection of luxury homes offers the perfect escape from city life. Each property combines contemporary design with classic California charm, featuring stunning architecture, manicured gardens, and modern amenities.",
+      description2: "Whether you're planning a family vacation, romantic getaway, or group retreat, our diverse portfolio of homes caters to every need. From hillside villas with panoramic views to family estates with resort-style amenities.",
       learnMore: "Learn More"
     },
     booking: {
       subtitle: "Book Your Stay",
       title: "Reserve Your Perfect Getaway",
-      description: "Take the first step towards your dream vacation by checking availability and securing your preferred dates. Our simple booking process ensures a seamless experience from reservation to arrival.",
-      benefits: ["Instant confirmation", "Best rate guarantee", "Flexible cancellation options", "Secure payment"]
+      description: "Experience California living at its finest. Our seamless booking process ensures you secure the perfect home for your dream vacation in America's most beautiful suburbs.",
+      benefits: ["Instant confirmation", "Best rate guarantee", "Flexible cancellation", "Concierge services"]
     },
     featuredApartments: {
-      subtitle: "Our Accommodations",
-      title: "Featured Apartments",
-      description: "Discover our most popular accommodation options, each offering a perfect blend of comfort, style, and breathtaking sea views.",
-      viewAll: "View All Apartments"
+      subtitle: "Featured Properties",
+      title: "Luxury California Homes",
+      description: "Discover our most sought-after vacation homes, each offering premium amenities, stunning design, and the quintessential California lifestyle experience.",
+      viewAll: "View All Homes"
     },
     amenities: {
-      subtitle: "Hotel Amenities",
-      title: "Experience The Best",
-      description: "Enjoy our premium facilities and services designed to make your stay exceptional.",
+      subtitle: "Premium Amenities",
+      title: "California Living at Its Best",
+      description: "Enjoy world-class amenities and services designed to create the ultimate California vacation experience.",
       features: {
         beachfront: {
-          title: "Beachfront Location",
-          description: "Direct access to pristine beaches with crystal clear waters."
+          title: "Landscaped Gardens",
+          description: "Beautifully maintained gardens and outdoor spaces perfect for relaxation."
         },
         pools: {
-          title: "Swimming Pools",
-          description: "Relax by our infinity pools with stunning sea views."
+          title: "Private Pools",
+          description: "Enjoy your own private pool and spa with stunning views."
         },
         restaurant: {
-          title: "Gourmet Restaurant",
-          description: "Enjoy exquisite local and international cuisine."
+          title: "Gourmet Kitchens",
+          description: "Fully equipped modern kitchens with premium appliances."
         },
         wifi: {
           title: "High-Speed Wi-Fi",
-          description: "Stay connected with complimentary high-speed internet."
+          description: "Stay connected with complimentary gigabit internet throughout."
         },
         bar: {
-          title: "Beach Bar & Café",
-          description: "Refreshing drinks and snacks served right on the beach."
+          title: "Entertainment Areas",
+          description: "Outdoor kitchens, fire pits, and entertainment spaces."
         },
         location: {
-          title: "Prime Location",
-          description: "Close to local attractions, shops, and restaurants."
+          title: "Prime Locations",
+          description: "Close to California's best attractions, dining, and shopping."
         }
       }
     },
     cta: {
-      title: "Ready for Your Dream Vacation?",
-      description: "Book your stay today and experience the perfect blend of luxury, comfort, and stunning sea views.",
+      title: "Ready for Your California Dream?",
+      description: "Book your luxury suburban retreat today and experience the perfect blend of relaxation, style, and California charm.",
       bookNow: "Book Now"
     }
   },
   apartments: {
-    title: "Our Apartments & Rooms",
-    subtitle: "Discover our selection of premium accommodations, ranging from cozy studios to luxurious penthouses.",
+    title: "Our Luxury Homes",
+    subtitle: "Discover our curated selection of premium California homes, from modern villas to family estates.",
     filters: {
       guests: "Guests",
       anyGuests: "Any number of guests",
@@ -118,9 +119,9 @@ export const en = {
       priceRange: "Price Range",
       showing: "Showing",
       of: "of",
-      accommodations: "accommodations",
+      accommodations: "homes",
       resetFilters: "Reset Filters",
-      noMatch: "No apartments match your filters",
+      noMatch: "No homes match your filters",
       adjustFilters: "Try adjusting your filter criteria to see more options.",
       viewDetails: "View Details",
       features: "features",
@@ -129,7 +130,7 @@ export const en = {
   },
   gallery: {
     title: "Photo Gallery",
-    subtitle: "Explore our seaside paradise through captivating imagery.",
+    subtitle: "Explore our stunning California properties through beautiful imagery.",
     filters: {
       all: "All",
       exterior: "Exterior",
@@ -141,7 +142,7 @@ export const en = {
     title: "Book Your Stay",
     subtitle: "Complete your reservation in a few simple steps.",
     steps: {
-      chooseRoom: "Choose Room",
+      chooseRoom: "Choose Home",
       guestDetails: "Guest Details",
       confirmation: "Confirmation"
     },
@@ -156,7 +157,7 @@ export const en = {
       selectDate: "Select date"
     },
     accommodationSelect: {
-      title: "Select Your Accommodation",
+      title: "Select Your Home",
       guests: "Guests",
       selected: "Selected",
       select: "Select",
@@ -201,7 +202,7 @@ export const en = {
     },
     confirmation: {
       title: "Review Booking Details",
-      accommodationDetails: "Accommodation Details",
+      accommodationDetails: "Home Details",
       guestDetails: "Guest Details",
       name: "Name",
       email: "Email",
@@ -227,12 +228,12 @@ export const en = {
   },
   contact: {
     title: "Contact Us",
-    subtitle: "We're here to help make your stay unforgettable. Reach out with any questions or special requests.",
+    subtitle: "We're here to help make your California getaway unforgettable. Reach out with any questions.",
     getInTouch: "Get In Touch",
     address: "Address",
     phone: "Phone",
     email: "Email",
-    receptionHours: "Reception Hours",
+    receptionHours: "Office Hours",
     checkInTime: "Check-in: After 3:00 PM",
     checkOutTime: "Check-out: Before 11:00 AM",
     sendMessage: "Send Us a Message",
@@ -245,150 +246,150 @@ export const en = {
     messageSent: "Message Sent!",
     thankYou: "Thank you for reaching out. We'll respond to your message as soon as possible.",
     faq: "Frequently Asked Questions",
-    faqSubtitle: "Find quick answers to commonly asked questions about our accommodations and services.",
+    faqSubtitle: "Find quick answers to commonly asked questions about our luxury homes and services.",
     questions: {
       checkInOut: {
         question: "What are your check-in and check-out times?",
         answer: "Check-in is from 3:00 PM onwards, and check-out is until 11:00 AM. Early check-in or late check-out may be arranged based on availability."
       },
       parking: {
-        question: "Is parking available at the property?",
-        answer: "Yes, we offer complimentary parking for all guests. Valet parking service is also available for an additional fee."
+        question: "Is parking available at the properties?",
+        answer: "Yes, all our homes feature private driveways and garage parking. Additional guest parking is also available."
       },
       pets: {
-        question: "Are pets allowed in the apartments?",
-        answer: "We welcome pets in designated pet-friendly apartments. Please inform us in advance if you plan to bring a pet, as additional charges may apply."
+        question: "Are pets allowed in the homes?",
+        answer: "We welcome pets in select pet-friendly properties. Please inform us in advance if you plan to bring a pet, as additional charges may apply."
       },
       breakfast: {
-        question: "Is breakfast included in the room rate?",
-        answer: "Breakfast is included in select room packages. You can check the inclusion during the booking process or add it to your reservation at any time."
+        question: "Are groceries or meals included?",
+        answer: "Our homes feature fully equipped kitchens for your convenience. We can arrange grocery delivery or private chef services upon request."
       },
       transfers: {
         question: "Do you offer airport transfers?",
-        answer: "Yes, we offer airport transfers for an additional fee. Please contact our concierge at least 48 hours before your arrival to arrange transportation."
+        answer: "Yes, we offer luxury airport transfers and car services. Please contact our concierge at least 48 hours before your arrival."
       },
       amenities: {
-        question: "What amenities are available at the property?",
-        answer: "Our property features swimming pools, a spa, restaurants, a beach bar, fitness center, and direct beach access. All apartments include Wi-Fi, air conditioning, and modern appliances."
+        question: "What amenities are included?",
+        answer: "Our properties feature private pools, gourmet kitchens, high-speed Wi-Fi, entertainment systems, and premium furnishings. Specific amenities vary by property."
       }
     }
   },
   apartmentDescriptions: {
     "1": {
-      name: "Deluxe Sea View Suite",
-      description: "Luxurious suite with panoramic sea views, modern amenities, and a private balcony."
+      name: "Modern Hillside Villa",
+      description: "Contemporary luxury home with panoramic valley views, infinity pool, and smart home technology."
     },
     "2": {
-      name: "Premium Family Apartment",
-      description: "Spacious apartment ideal for families, with full kitchen and stunning coastal views."
+      name: "Family Oasis Estate",
+      description: "Spacious family home with manicured gardens, outdoor entertainment area, and modern amenities."
     },
     "3": {
-      name: "Executive Beach Studio",
-      description: "Elegant studio with direct beach access, modern design, and premium finishes."
+      name: "Contemporary Retreat",
+      description: "Sleek design with indoor-outdoor living, perfect for entertaining with stunning sunset views."
     },
     "4": {
-      name: "Luxury Penthouse Suite",
-      description: "Exclusive top-floor suite with expansive terrace and panoramic sea views."
+      name: "Executive Mountain View",
+      description: "Sophisticated home with mountain vistas, wine cellar, and resort-style amenities."
     },
     "5": {
-      name: "Classic Double Room",
-      description: "Comfortable hotel room with modern amenities and partial sea views."
+      name: "Garden Paradise Villa",
+      description: "Beautifully landscaped property with private gardens, pool, and outdoor living spaces."
     },
     "6": {
-      name: "Garden View Apartment",
-      description: "Peaceful apartment surrounded by lush gardens, just a short walk from the beach."
+      name: "Modern Architectural Gem",
+      description: "Award-winning design featuring floor-to-ceiling windows, open concept, and premium finishes."
     }
   },
   amenitiesPage: {
-    title: "Our Amenities",
-    subtitle: "Discover the luxury amenities and services that make your stay unforgettable.",
-    description: "At MareSereno, we are dedicated to providing a comprehensive and luxurious stay experience. From our beachfront services to wellness facilities, every detail has been curated to ensure maximum comfort and pleasure.",
+    title: "Premium Amenities",
+    subtitle: "Discover the luxury amenities that make your California stay extraordinary.",
+    description: "Our California luxury homes are equipped with world-class amenities designed to provide the ultimate in comfort, convenience, and style. Every detail has been carefully curated to ensure an unforgettable experience.",
     categories: {
       wellness: {
-        title: "Wellness & Relaxation",
-        description: "Treat yourself with our range of wellness services designed to rejuvenate body and mind.",
+        title: "Wellness & Recreation",
+        description: "Rejuvenate your body and mind with our premium wellness and recreational facilities.",
         items: [
           {
-            title: "Luxury Spa",
-            description: "Our spa offers a full range of treatments, from traditional therapies to the most modern beauty treatments."
+            title: "Private Pools & Spas",
+            description: "Enjoy your own infinity pool and spa with stunning views of California's landscape."
           },
           {
-            title: "Fitness Center",
-            description: "Maintain your fitness routine with our state-of-the-art gym featuring panoramic sea views."
+            title: "Home Gyms",
+            description: "Stay fit with fully equipped home gyms featuring state-of-the-art equipment."
           },
           {
-            title: "Infinity Pool",
-            description: "Immerse yourself in our infinity pool while admiring the endless horizon of the sea."
+            title: "Outdoor Living",
+            description: "Expansive terraces, gardens, and outdoor entertainment areas for perfect California living."
           },
           {
-            title: "Beach Yoga",
-            description: "Join our morning yoga sessions on the beach for a revitalizing awakening."
+            title: "Recreation Rooms",
+            description: "Game rooms, home theaters, and entertainment spaces for family fun."
           }
         ]
       },
       dining: {
-        title: "Dining",
-        description: "Discover the best of local and international cuisine at our restaurants and bars.",
+        title: "Culinary Excellence",
+        description: "Experience California's culinary culture with premium kitchen facilities and dining options.",
         items: [
           {
-            title: "Gourmet Restaurant",
-            description: "Savor fine dishes prepared by our chefs with fresh local ingredients."
+            title: "Gourmet Kitchens",
+            description: "Professional-grade appliances and elegant design for the ultimate cooking experience."
           },
           {
-            title: "Beach Bar",
-            description: "Enjoy refreshing cocktails and light snacks with your feet in the sand."
+            title: "Outdoor Kitchens",
+            description: "Fully equipped outdoor cooking areas perfect for California's year-round entertaining weather."
           },
           {
-            title: "Lounge Bar",
-            description: "Relax with a selection of fine wines and spirits in an elegant atmosphere."
+            title: "Wine Storage",
+            description: "Climate-controlled wine cellars and storage for your favorite California vintages."
           },
           {
-            title: "Room Service",
-            description: "Enjoy gourmet meals in the privacy of your apartment, available 24 hours a day."
+            title: "Private Chef Service",
+            description: "Arrange for professional chefs to prepare meals in your home's kitchen."
           }
         ]
       },
       services: {
-        title: "Extra Services",
-        description: "Take advantage of our additional services for a hassle-free stay.",
+        title: "Concierge Services",
+        description: "Enjoy personalized services designed to make your California stay effortless.",
         items: [
           {
             title: "24/7 Concierge",
-            description: "Our concierge team is available at any time to assist you with any request."
+            description: "Round-the-clock assistance for reservations, recommendations, and special requests."
           },
           {
-            title: "Airport Transfers",
-            description: "Travel comfortably to and from the airport with our private transfer service."
+            title: "Luxury Transportation",
+            description: "Private drivers, luxury car rentals, and airport transfer services available."
           },
           {
-            title: "Car Rental",
-            description: "Explore the area with our fleet of premium vehicles available for rent."
+            title: "Housekeeping",
+            description: "Professional housekeeping services to maintain your home during your stay."
           },
           {
-            title: "Guided Excursions",
-            description: "Discover local attractions with our personalized expert-guided tours."
+            title: "Local Experiences",
+            description: "Curated experiences including wine tours, hiking guides, and cultural activities."
           }
         ]
       },
       entertainment: {
-        title: "Entertainment",
-        description: "Enjoy a variety of recreational activities designed for all tastes.",
+        title: "Entertainment & Technology",
+        description: "Stay entertained with cutting-edge technology and premium entertainment options.",
         items: [
           {
-            title: "Water Sports",
-            description: "Try a wide range of water sports, from paddleboarding to jet skiing."
+            title: "Smart Home Systems",
+            description: "Control lighting, temperature, entertainment, and security with integrated smart technology."
           },
           {
-            title: "Kids Play Area",
-            description: "Little ones can have fun in our safe and supervised play area."
+            title: "Home Theaters",
+            description: "Private cinema rooms with surround sound and comfortable seating for movie nights."
           },
           {
-            title: "Themed Evenings",
-            description: "Join our weekly themed evenings with live music and entertainment."
+            title: "High-Speed Internet",
+            description: "Gigabit Wi-Fi throughout the property for seamless connectivity and remote work."
           },
           {
-            title: "Library & Game Room",
-            description: "Relax with a good book or enjoy board games in our common room."
+            title: "Outdoor Entertainment",
+            description: "Fire pits, outdoor speakers, and entertainment areas for memorable evenings under the stars."
           }
         ]
       }
