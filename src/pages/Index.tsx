@@ -11,86 +11,73 @@ import { ArrowRight, Wifi, Utensils, Trees, Sun, MapPin, Coffee } from "lucide-r
 import { useLanguage } from "@/contexts/LanguageContext";
 
 // Sample apartments data - California suburb homes
-const featuredApartments: ApartmentProps[] = [
-  {
-    id: "1",
-    name: "Modern Hillside Villa",
-    description: "Contemporary luxury home with panoramic valley views, infinity pool, and smart home technology.",
-    price: 480,
-    capacity: 6,
-    size: 120,
-    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
-    location: "Hills",
-    features: ["Wi-Fi", "Full Kitchen", "Pool", "Smart Home", "Gym", "Terrace"]
-  },
-  {
-    id: "2",
-    name: "Family Oasis Estate",
-    description: "Spacious family home with manicured gardens, outdoor entertainment area, and modern amenities.",
-    price: 650,
-    capacity: 8,
-    size: 180,
-    image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&h=600&fit=crop",
-    location: "Residential",
-    features: ["Wi-Fi", "Gourmet Kitchen", "Pool", "Garden", "BBQ Area", "Game Room"]
-  },
-  {
-    id: "3",
-    name: "Contemporary Retreat",
-    description: "Sleek design with indoor-outdoor living, perfect for entertaining with stunning sunset views.",
-    price: 380,
-    capacity: 4,
-    size: 95,
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop",
-    location: "West Side",
-    features: ["Wi-Fi", "Modern Kitchen", "Patio", "Fireplace", "Wine Cellar"]
-  }
-];
-
+const featuredApartments: ApartmentProps[] = [{
+  id: "1",
+  name: "Modern Hillside Villa",
+  description: "Contemporary luxury home with panoramic valley views, infinity pool, and smart home technology.",
+  price: 480,
+  capacity: 6,
+  size: 120,
+  image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
+  location: "Hills",
+  features: ["Wi-Fi", "Full Kitchen", "Pool", "Smart Home", "Gym", "Terrace"]
+}, {
+  id: "2",
+  name: "Family Oasis Estate",
+  description: "Spacious family home with manicured gardens, outdoor entertainment area, and modern amenities.",
+  price: 650,
+  capacity: 8,
+  size: 180,
+  image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&h=600&fit=crop",
+  location: "Residential",
+  features: ["Wi-Fi", "Gourmet Kitchen", "Pool", "Garden", "BBQ Area", "Game Room"]
+}, {
+  id: "3",
+  name: "Contemporary Retreat",
+  description: "Sleek design with indoor-outdoor living, perfect for entertaining with stunning sunset views.",
+  price: 380,
+  capacity: 4,
+  size: 95,
+  image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop",
+  location: "West Side",
+  features: ["Wi-Fi", "Modern Kitchen", "Patio", "Fireplace", "Wine Cellar"]
+}];
 export default function Index() {
-  const { t } = useLanguage();
-  
+  const {
+    t
+  } = useLanguage();
   useEffect(() => {
     // Scroll to top when component mounts
     window.scrollTo(0, 0);
   }, []);
-  
+
   // Feature items
-  const features = [
-    {
-      icon: <Trees className="h-8 w-8 text-primary" />,
-      title: t.home.amenities.features.beachfront.title,
-      description: t.home.amenities.features.beachfront.description
-    },
-    {
-      icon: <Sun className="h-8 w-8 text-primary" />,
-      title: t.home.amenities.features.pools.title,
-      description: t.home.amenities.features.pools.description
-    },
-    {
-      icon: <Utensils className="h-8 w-8 text-primary" />,
-      title: t.home.amenities.features.restaurant.title,
-      description: t.home.amenities.features.restaurant.description
-    },
-    {
-      icon: <Wifi className="h-8 w-8 text-primary" />,
-      title: t.home.amenities.features.wifi.title,
-      description: t.home.amenities.features.wifi.description
-    },
-    {
-      icon: <Coffee className="h-8 w-8 text-primary" />,
-      title: t.home.amenities.features.bar.title,
-      description: t.home.amenities.features.bar.description
-    },
-    {
-      icon: <MapPin className="h-8 w-8 text-primary" />,
-      title: t.home.amenities.features.location.title,
-      description: t.home.amenities.features.location.description
-    }
-  ];
-  
-  return (
-    <div className="min-h-screen flex flex-col">
+  const features = [{
+    icon: <Trees className="h-8 w-8 text-primary" />,
+    title: t.home.amenities.features.beachfront.title,
+    description: t.home.amenities.features.beachfront.description
+  }, {
+    icon: <Sun className="h-8 w-8 text-primary" />,
+    title: t.home.amenities.features.pools.title,
+    description: t.home.amenities.features.pools.description
+  }, {
+    icon: <Utensils className="h-8 w-8 text-primary" />,
+    title: t.home.amenities.features.restaurant.title,
+    description: t.home.amenities.features.restaurant.description
+  }, {
+    icon: <Wifi className="h-8 w-8 text-primary" />,
+    title: t.home.amenities.features.wifi.title,
+    description: t.home.amenities.features.wifi.description
+  }, {
+    icon: <Coffee className="h-8 w-8 text-primary" />,
+    title: t.home.amenities.features.bar.title,
+    description: t.home.amenities.features.bar.description
+  }, {
+    icon: <MapPin className="h-8 w-8 text-primary" />,
+    title: t.home.amenities.features.location.title,
+    description: t.home.amenities.features.location.description
+  }];
+  return <div className="min-h-screen flex flex-col">
       <Navbar />
       
       <main className="flex-1">
@@ -123,25 +110,13 @@ export default function Index() {
               
               <div className="relative animate-fade-in [animation-delay:300ms]">
                 <div className="aspect-[4/3] rounded-2xl overflow-hidden">
-                  <img 
-                    src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop"
-                    alt="Modern California home" 
-                    className="w-full h-full object-cover"
-                  />
+                  <img alt="Modern California home" className="w-full h-full object-cover" src="https://img-v2.gtsstatic.net/reno/imagereader.aspx?imageurl=https%3A%2F%2Fm.sothebysrealty.com%2F1194i215%2Fewep9n74dc3xmcpbv48c9pnqp5i215&option=N&h=472&permitphotoenlargement=false" />
                 </div>
                 <div className="absolute -bottom-6 -left-6 w-2/3 rounded-2xl overflow-hidden shadow-xl">
-                  <img 
-                    src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=400&h=300&fit=crop"
-                    alt="Luxury home interior" 
-                    className="w-full h-full object-cover"
-                  />
+                  <img alt="Luxury home interior" className="w-full h-full object-cover" src="https://img-v2.gtsstatic.net/reno/imagereader.aspx?imageurl=https%3A%2F%2Fm.sothebysrealty.com%2F1194i215%2Fe7r9jp8vwrgzmgj9bryv3v9750i215&option=N&h=472&permitphotoenlargement=false" />
                 </div>
                 <div className="absolute -top-6 -right-6 w-1/2 rounded-2xl overflow-hidden shadow-xl">
-                  <img 
-                    src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=400&h=300&fit=crop"
-                    alt="Pool and garden view" 
-                    className="w-full h-full object-cover"
-                  />
+                  <img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=400&h=300&fit=crop" alt="Pool and garden view" className="w-full h-full object-cover" />
                 </div>
               </div>
             </div>
@@ -163,14 +138,12 @@ export default function Index() {
                   {t.home.booking.description}
                 </p>
                 <ul className="space-y-3 mb-8">
-                  {t.home.booking.benefits.map((item, index) => (
-                    <li key={index} className="flex items-center">
+                  {t.home.booking.benefits.map((item, index) => <li key={index} className="flex items-center">
                       <div className="h-5 w-5 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
                         <ArrowRight className="h-3 w-3" />
                       </div>
                       {item}
-                    </li>
-                  ))}
+                    </li>)}
                 </ul>
               </div>
               
@@ -201,11 +174,11 @@ export default function Index() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredApartments.map((apartment, index) => (
-                <div key={apartment.id} className="animate-fade-in" style={{ animationDelay: `${(index + 1) * 100}ms` }}>
+              {featuredApartments.map((apartment, index) => <div key={apartment.id} className="animate-fade-in" style={{
+              animationDelay: `${(index + 1) * 100}ms`
+            }}>
                   <ApartmentCard apartment={apartment} />
-                </div>
-              ))}
+                </div>)}
             </div>
             
             <div className="text-center mt-12">
@@ -237,19 +210,15 @@ export default function Index() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {features.map((feature, index) => (
-                <div 
-                  key={index} 
-                  className="glass-card p-6 rounded-xl animate-fade-in flex flex-col items-center text-center"
-                  style={{ animationDelay: `${(index + 1) * 100}ms` }}
-                >
+              {features.map((feature, index) => <div key={index} className="glass-card p-6 rounded-xl animate-fade-in flex flex-col items-center text-center" style={{
+              animationDelay: `${(index + 1) * 100}ms`
+            }}>
                   <div className="mb-4 p-3 rounded-full bg-primary/10">
                     {feature.icon}
                   </div>
                   <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </section>
@@ -272,26 +241,14 @@ export default function Index() {
           
           {/* Decorative waves */}
           <div className="absolute bottom-0 left-0 right-0 h-24 overflow-hidden">
-            <svg 
-              className="absolute bottom-0 w-full h-24 fill-background"
-              preserveAspectRatio="none"
-              viewBox="0 0 1440 74"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path 
-                d="M0,37.1L40,34.5C80,32,160,27,240,29.6C320,32,400,42,480,42.9C560,44,640,35,720,32.1C800,30,880,34,960,40.8C1040,47,1120,56,1200,56.6C1280,57,1360,48,1400,43.3L1440,39.1L1440,74L1400,74C1360,74,1280,74,1200,74C1120,74,1040,74,960,74C880,74,800,74,720,74C640,74,560,74,480,74C400,74,320,74,240,74C160,74,80,74,40,74L0,74Z"
-                className="animate-wave opacity-50"
-              />
-              <path 
-                d="M0,37.1L40,34.5C80,32,160,27,240,29.6C320,32,400,42,480,42.9C560,44,640,35,720,32.1C800,30,880,34,960,40.8C1040,47,1120,56,1200,56.6C1280,57,1360,48,1400,43.3L1440,39.1L1440,74L1400,74C1360,74,1280,74,1200,74C1120,74,1040,74,960,74C880,74,800,74,720,74C640,74,560,74,480,74C400,74,320,74,240,74C160,74,80,74,40,74L0,74Z"
-                className="animate-wave opacity-100 [animation-delay:-4s]"
-              />
+            <svg className="absolute bottom-0 w-full h-24 fill-background" preserveAspectRatio="none" viewBox="0 0 1440 74" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0,37.1L40,34.5C80,32,160,27,240,29.6C320,32,400,42,480,42.9C560,44,640,35,720,32.1C800,30,880,34,960,40.8C1040,47,1120,56,1200,56.6C1280,57,1360,48,1400,43.3L1440,39.1L1440,74L1400,74C1360,74,1280,74,1200,74C1120,74,1040,74,960,74C880,74,800,74,720,74C640,74,560,74,480,74C400,74,320,74,240,74C160,74,80,74,40,74L0,74Z" className="animate-wave opacity-50" />
+              <path d="M0,37.1L40,34.5C80,32,160,27,240,29.6C320,32,400,42,480,42.9C560,44,640,35,720,32.1C800,30,880,34,960,40.8C1040,47,1120,56,1200,56.6C1280,57,1360,48,1400,43.3L1440,39.1L1440,74L1400,74C1360,74,1280,74,1200,74C1120,74,1040,74,960,74C880,74,800,74,720,74C640,74,560,74,480,74C400,74,320,74,240,74C160,74,80,74,40,74L0,74Z" className="animate-wave opacity-100 [animation-delay:-4s]" />
             </svg>
           </div>
         </section>
       </main>
       
       <Footer />
-    </div>
-  );
+    </div>;
 }
