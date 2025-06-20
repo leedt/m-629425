@@ -1,7 +1,9 @@
+
 import { useState } from "react";
-import { X, MessageCircle } from "lucide-react";
+import { EndCall, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+
 export default function InterruptWidget() {
   return <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-[100]">
       
@@ -30,9 +32,9 @@ export default function InterruptWidget() {
           </div>
         </div>
         
-        <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-          <Button variant="outline" size="sm" className="w-full justify-start text-sm">
-            <X className="h-4 w-4 mr-2" />
+        <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 flex justify-center">
+          <Button variant="outline" size="sm" className="px-4 py-2 rounded-full text-sm">
+            <EndCall className="h-4 w-4 mr-2" />
             End
           </Button>
         </div>
