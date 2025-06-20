@@ -29,7 +29,7 @@ export default function HeroSection() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1554995207-c18c203602cb?w=1920&h=1080&fit=crop')",
+          backgroundImage: "url('https://img-v2.gtsstatic.net/reno/imagereader.aspx?imageurl=https%3A%2F%2Fmediarem.metrolist.net%2Fmetrolist%2Flistingpics%2Fbigphoto%2F2025%2F04%2F03%2Fde76072a-b004-43e0-9683-036853ab2f5e.jpg%3Fdate%3D2025-06-13&option=N&h=472&permitphotoenlargement=false')",
           transform: `translateY(${backgroundY}px)`,
           backgroundPosition: `center ${50 + scrollY * 0.05}%`
         }}
