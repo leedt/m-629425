@@ -1,23 +1,35 @@
+
 import { useState } from "react";
 import { PhoneOff, Phone, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+
 export default function InterruptWidget() {
   const [isCallActive, setIsCallActive] = useState(false);
+
   const handleToggleCall = () => {
     setIsCallActive(!isCallActive);
   };
-  return <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-[100]">
-      
+
+  return (
+    <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-[100]">
       <div className="bg-white dark:bg-card rounded-2xl shadow-2xl p-4 w-64 border">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs text-muted-foreground whitespace-nowrap">Is this response helpful?</span>
           <div className="flex items-center space-x-2">
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full bg-slate-100 hover:bg-slate-200 opacity-80">
-              <span className="text-slate-600">👍</span>
+              <img 
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROFxd6NKkMw7fVZohA44OcbjBE87z5diJxFg&s" 
+                alt="thumbs up" 
+                className="w-4 h-4"
+              />
             </Button>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full bg-slate-100 hover:bg-slate-200 opacity-80">
-              <span className="text-slate-600">👎</span>
+              <img 
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROFxd6NKkMw7fVZohA44OcbjBE87z5diJxFg&s" 
+                alt="thumbs down" 
+                className="w-4 h-4 transform rotate-180"
+              />
             </Button>
           </div>
         </div>
@@ -50,5 +62,6 @@ export default function InterruptWidget() {
           Powered by
         </div>
       </div>
-    </div>;
+    </div>
+  );
 }
