@@ -37,7 +37,7 @@ export default function InterruptWidget() {
           </div>
         </div>
         
-        <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 flex justify-center">
+        <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 flex justify-end">
           <Button 
             variant="outline" 
             size="sm" 
