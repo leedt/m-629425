@@ -5,12 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function InterruptWidget() {
-  const [isVisible, setIsVisible] = useState(true);
-
-  if (!isVisible) {
-    return null;
-  }
-
   return (
     <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-40">
       <div className="bg-white dark:bg-card rounded-2xl shadow-2xl p-4 w-64 border">
@@ -36,14 +30,6 @@ export default function InterruptWidget() {
               <h3 className="font-semibold text-sm">Talk to interrupt</h3>
             </div>
           </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setIsVisible(false)}
-            className="h-8 w-8 hover:bg-gray-100"
-          >
-            <X className="h-4 w-4" />
-          </Button>
         </div>
         
         <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
