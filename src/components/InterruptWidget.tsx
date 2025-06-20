@@ -7,7 +7,24 @@ export default function InterruptWidget() {
   const [isCallActive, setIsCallActive] = useState(false);
   const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
 
+  const playCallSound = () => {
+    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRtV8cBzoi2/a4diMFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRql0bBjoi2/a4diMFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRql0bBToi2/a4diMFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRql0bBjoi2/a4diMFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAk=');
+    audio.volume = 0.3;
+    audio.play().catch(e => console.log('Could not play call sound:', e));
+  };
+
+  const playEndCallSound = () => {
+    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt259NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRtV8cBzoi2/a4diMFLIHO8tiJNwgZaLvt259NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRtV8cBzoi2/a4diMFLIHO8tiJNwgZaLvt259NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRtV8cBzoi2/a4diMFLIHO8tiJNwgZaLvt259NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRtV8cBzoi2/a4diMFLIHO8tiJNwgZaLvt259NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRtV8cBzoi2/a4diMFLIHO8tiJNwgZaLvt259NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAk=');
+    audio.volume = 0.3;
+    audio.play().catch(e => console.log('Could not play end call sound:', e));
+  };
+
   const handleToggleCall = () => {
+    if (isCallActive) {
+      playEndCallSound();
+    } else {
+      playCallSound();
+    }
     setIsCallActive(!isCallActive);
   };
 
