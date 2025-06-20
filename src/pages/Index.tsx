@@ -110,7 +110,7 @@ export default function Index() {
               
               <div className="relative animate-fade-in [animation-delay:300ms]">
                 <div className="aspect-[4/3] rounded-2xl overflow-hidden">
-                  <img alt="Modern California home" className="w-full h-full object-cover" src="https://img-v2.gtsstatic.net/reno/imagereader.aspx?imageurl=https%3A%2F%2Fm.sothebysrealty.com%2F1194i215%2Fewep9n74dc3xmcpbv48c9pnqp5i215&option=N&h=472&permitphotoenlargement=false" />
+                  <img alt="Modern California home" className="w-full h-full object-cover" src="https://img-v2.gtsstatic.net/reno/imagereader.aspx?imageurl=https%3A%2F%2Fmediarem.metrolist.net%2Fmetrolist%2Flistingpics%2Fbigphoto%2F2025%2F04%2F24%2F814e2177-fb1f-472e-b875-6107c61cb671.jpg%3Fdate%3D2025-06-13&option=N&h=472&permitphotoenlargement=false" />
                 </div>
                 <div className="absolute -bottom-6 -left-6 w-2/3 rounded-2xl overflow-hidden shadow-xl">
                   <img alt="Luxury home interior" className="w-full h-full object-cover" src="https://img-v2.gtsstatic.net/reno/imagereader.aspx?imageurl=https%3A%2F%2Fm.sothebysrealty.com%2F1194i215%2Fe7r9jp8vwrgzmgj9bryv3v9750i215&option=N&h=472&permitphotoenlargement=false" />
