@@ -1,12 +1,13 @@
-
 import { useState } from "react";
 import { X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-
 export default function InterruptWidget() {
-  return (
-    <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-[60]">
+  const [isVisible, setIsVisible] = useState(true);
+  if (!isVisible) {
+    return null;
+  }
+  return <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-40">
       <div className="bg-white dark:bg-card rounded-2xl shadow-2xl p-4 w-64 border">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm text-muted-foreground">Is this response helpful?</span>
@@ -27,17 +28,16 @@ export default function InterruptWidget() {
               <AvatarFallback className="bg-primary/10 text-primary">M</AvatarFallback>
             </Avatar>
             <div>
-              <h3 className="font-semibold text-sm">Talk to interrupt</h3>
+              <h3 className="font-semibold text-sm text-center rounded-full"> Call End</h3>
             </div>
           </div>
+          <Button variant="ghost" size="icon" onClick={() => setIsVisible(false)} className="h-8 w-8 hover:bg-gray-100">
+            <X className="h-4 w-4" />
+          </Button>
         </div>
         
         <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="w-full justify-start text-sm"
-          >
+          <Button variant="outline" size="sm" className="w-full justify-start text-sm">
             <X className="h-4 w-4 mr-2" />
             End
           </Button>
@@ -47,6 +47,5 @@ export default function InterruptWidget() {
           Powered by
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
