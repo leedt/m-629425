@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { PhoneOff, Phone, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,22 +25,16 @@ export default function InterruptWidget() {
   }, [isCallActive]);
 
   const getAvatarClasses = () => {
-    if (!isCallActive) return "w-24 h-24";
-    
-    if (isAgentSpeaking) {
-      return "w-24 h-24 animate-pulse-slow shadow-lg shadow-primary/50";
-    } else {
-      return "w-24 h-24 shadow-lg shadow-primary/30 ring-2 ring-primary/20 animate-pulse-slow";
-    }
+    return "w-24 h-24"; // Avatar itself stays consistent
   };
 
   const getAvatarContainerClasses = () => {
     if (!isCallActive) return "";
     
     if (isAgentSpeaking) {
-      return "relative before:absolute before:inset-0 before:rounded-full before:bg-primary/10 before:animate-ping before:scale-110";
+      return "relative before:absolute before:inset-0 before:rounded-full before:bg-primary/20 before:animate-ping before:scale-110 after:absolute after:inset-0 after:rounded-full after:shadow-lg after:shadow-primary/50 after:animate-pulse-slow";
     } else {
-      return "relative before:absolute before:inset-0 before:rounded-full before:ring-1 before:ring-primary/30 before:animate-pulse";
+      return "relative before:absolute before:inset-0 before:rounded-full before:shadow-lg before:shadow-primary/30 before:ring-2 before:ring-primary/20";
     }
   };
 
@@ -74,7 +67,7 @@ export default function InterruptWidget() {
           {/* Left half - Portrait image */}
           <div className="w-1/2 flex items-center justify-center p-4">
             <div className={`transition-all duration-500 ${getAvatarContainerClasses()}`}>
-              <Avatar className={`transition-all duration-300 ${getAvatarClasses()}`}>
+              <Avatar className={`transition-all duration-300 ${getAvatarClasses()} relative z-10`}>
                 <AvatarImage src="/lovable-uploads/b4f45544-be19-447f-9656-9758c93ecd9e.png" alt="Morgan" />
                 <AvatarFallback className="bg-primary/10 text-primary text-xl">M</AvatarFallback>
               </Avatar>
