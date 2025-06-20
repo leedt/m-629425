@@ -6,7 +6,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function InterruptWidget() {
   return (
-    <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-40">
+    <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-[60]">
       <div className="bg-white dark:bg-card rounded-2xl shadow-2xl p-4 w-64 border">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm text-muted-foreground">Is this response helpful?</span>
