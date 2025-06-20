@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { EndCall, MessageCircle } from "lucide-react";
+import { PhoneOff, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
@@ -34,7 +34,7 @@ export default function InterruptWidget() {
         
         <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 flex justify-center">
           <Button variant="outline" size="sm" className="px-4 py-2 rounded-full text-sm">
-            <EndCall className="h-4 w-4 mr-2" />
+            <PhoneOff className="h-4 w-4 mr-2" />
             End
           </Button>
         </div>
