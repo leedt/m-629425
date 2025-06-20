@@ -40,7 +40,7 @@ export default function HeroSection() {
       
       {/* Content */}
       <div
-        className="relative h-full flex flex-col justify-start items-center text-center px-4 pt-[25vh]"
+        className="relative h-full flex flex-col justify-start items-center text-center px-4 pt-[15vh]"
         style={{ transform: `translateY(${contentY}px)` }}
       >
         <div className="max-w-3xl animate-fade-in">
