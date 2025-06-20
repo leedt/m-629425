@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Send, X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState("");
@@ -56,9 +58,10 @@ export default function ChatWidget() {
         <div className="bg-gradient-to-r from-primary to-primary/80 p-4 text-white bg-gray-100">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                <span className="text-sm font-semibold">M</span>
-              </div>
+              <Avatar className="w-10 h-10">
+                <AvatarImage src="/lovable-uploads/b4f45544-be19-447f-9656-9758c93ecd9e.png" alt="Morgan" />
+                <AvatarFallback className="bg-white/20 text-white">M</AvatarFallback>
+              </Avatar>
               <div>
                 <h3 className="font-semibold">Morgan</h3>
                 <p className="text-xs opacity-90">ACME Realty Virtual Agent</p>
