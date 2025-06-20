@@ -19,16 +19,16 @@ export default function InterruptWidget() {
           <div className="flex items-center space-x-2">
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full bg-slate-100 hover:bg-slate-200 opacity-80">
               <img 
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROFxd6NKkMw7fVZohA44OcbjBE87z5diJxFg&s" 
+                src="/lovable-uploads/e8e9de59-d66f-4ef1-8c03-4aa1339e0780.png" 
                 alt="thumbs up" 
                 className="w-4 h-4"
               />
             </Button>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full bg-slate-100 hover:bg-slate-200 opacity-80">
               <img 
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROFxd6NKkMw7fVZohA44OcbjBE87z5diJxFg&s" 
+                src="/lovable-uploads/40df2e1d-cad4-495c-a5ee-5525545fa3da.png" 
                 alt="thumbs down" 
-                className="w-4 h-4 transform rotate-180"
+                className="w-4 h-4"
               />
             </Button>
           </div>
