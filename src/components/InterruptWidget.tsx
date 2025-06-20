@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { PhoneOff, Phone, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,7 +40,7 @@ export default function InterruptWidget() {
               <AvatarFallback className="bg-primary/10 text-primary">M</AvatarFallback>
             </Avatar>
             <div>
-              <h3 className="font-medium text-sm text-center rounded-full">Talk to interrupt</h3>
+              <h3 className="font-roboto font-medium text-sm text-center rounded-full">Talk to interrupt</h3>
             </div>
           </div>
         </div>
