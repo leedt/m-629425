@@ -39,7 +39,7 @@ export default function InterruptWidget() {
         <div className="flex">
           {/* Left half - Portrait image */}
           <div className="w-1/2 flex items-center justify-center p-4">
-            <Avatar className="w-20 h-20">
+            <Avatar className="w-22 h-22">
               <AvatarImage src="/lovable-uploads/b4f45544-be19-447f-9656-9758c93ecd9e.png" alt="Morgan" />
               <AvatarFallback className="bg-primary/10 text-primary text-xl">M</AvatarFallback>
             </Avatar>
