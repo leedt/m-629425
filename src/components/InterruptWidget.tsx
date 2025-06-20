@@ -2,14 +2,11 @@ import { useState } from "react";
 import { PhoneOff, Phone, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-
 export default function InterruptWidget() {
   const [isCallActive, setIsCallActive] = useState(false);
-
   const handleToggleCall = () => {
     setIsCallActive(!isCallActive);
   };
-
   return <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-[100]">
       
       <div className="bg-white dark:bg-card rounded-2xl shadow-2xl p-4 w-64 border">
@@ -38,23 +35,14 @@ export default function InterruptWidget() {
         </div>
         
         <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 flex justify-end">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="px-4 py-2 rounded-full text-sm"
-            onClick={handleToggleCall}
-          >
-            {isCallActive ? (
-              <>
+          <Button variant="outline" size="sm" className="px-4 py-2 rounded-full text-sm" onClick={handleToggleCall}>
+            {isCallActive ? <>
                 <PhoneOff className="h-4 w-4 mr-2" />
                 End
-              </>
-            ) : (
-              <>
+              </> : <>
                 <Phone className="h-4 w-4 mr-2" />
                 Call
-              </>
-            )}
+              </>}
           </Button>
         </div>
         
