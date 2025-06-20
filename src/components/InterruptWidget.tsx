@@ -1,14 +1,48 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PhoneOff, Phone, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function InterruptWidget() {
   const [isCallActive, setIsCallActive] = useState(false);
+  const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
 
   const handleToggleCall = () => {
     setIsCallActive(!isCallActive);
+  };
+
+  // Demo logic to simulate agent speaking patterns
+  useEffect(() => {
+    if (isCallActive) {
+      const interval = setInterval(() => {
+        setIsAgentSpeaking(prev => !prev);
+      }, 3000); // Toggle every 3 seconds for demo
+
+      return () => clearInterval(interval);
+    } else {
+      setIsAgentSpeaking(false);
+    }
+  }, [isCallActive]);
+
+  const getAvatarClasses = () => {
+    if (!isCallActive) return "w-24 h-24";
+    
+    if (isAgentSpeaking) {
+      return "w-24 h-24 animate-pulse-slow shadow-lg shadow-primary/50";
+    } else {
+      return "w-24 h-24 shadow-lg shadow-primary/30 ring-2 ring-primary/20 animate-pulse-slow";
+    }
+  };
+
+  const getAvatarContainerClasses = () => {
+    if (!isCallActive) return "";
+    
+    if (isAgentSpeaking) {
+      return "relative before:absolute before:inset-0 before:rounded-full before:bg-primary/10 before:animate-ping before:scale-110";
+    } else {
+      return "relative before:absolute before:inset-0 before:rounded-full before:ring-1 before:ring-primary/30 before:animate-pulse";
+    }
   };
 
   return (
@@ -39,10 +73,12 @@ export default function InterruptWidget() {
         <div className="flex">
           {/* Left half - Portrait image */}
           <div className="w-1/2 flex items-center justify-center p-4">
-            <Avatar className="w-24 h-24">
-              <AvatarImage src="/lovable-uploads/b4f45544-be19-447f-9656-9758c93ecd9e.png" alt="Morgan" />
-              <AvatarFallback className="bg-primary/10 text-primary text-xl">M</AvatarFallback>
-            </Avatar>
+            <div className={`transition-all duration-500 ${getAvatarContainerClasses()}`}>
+              <Avatar className={`transition-all duration-300 ${getAvatarClasses()}`}>
+                <AvatarImage src="/lovable-uploads/b4f45544-be19-447f-9656-9758c93ecd9e.png" alt="Morgan" />
+                <AvatarFallback className="bg-primary/10 text-primary text-xl">M</AvatarFallback>
+              </Avatar>
+            </div>
           </div>
           
           {/* Right half - Content stacked vertically */}
