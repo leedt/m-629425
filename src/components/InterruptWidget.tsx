@@ -106,12 +106,6 @@ export default function InterruptWidget() {
             </div>
           </div>
         </div>
-        
-        <div className="px-4 pb-4">
-          <div className="text-xs text-white bg-primary rounded-full px-3 py-1 text-center">
-            Powered by Vapi AI
-          </div>
-        </div>
       </div>
     </div>
   );
