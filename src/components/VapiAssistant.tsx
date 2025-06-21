@@ -2,13 +2,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 
-declare global {
-  interface Window {
-    vapiInstance?: any;
-    vapiSDK?: any;
-  }
-}
-
 export default function VapiAssistant() {
   const [vapiInstance, setVapiInstance] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);

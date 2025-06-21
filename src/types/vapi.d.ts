@@ -12,15 +12,15 @@ interface VapiInstance {
 interface VapiSDK {
   run: (config: {
     apiKey: string;
-    assistant: string;
+    assistant: { id: string };
     config?: any;
   }) => VapiInstance;
 }
 
 declare global {
   interface Window {
-    vapiSDK: VapiSDK;
-    vapiInstance: VapiInstance | null;
+    vapiSDK?: VapiSDK;
+    vapiInstance?: VapiInstance;
   }
 }
 
