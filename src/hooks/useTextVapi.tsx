@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 
 export interface TextMessage {
@@ -24,6 +23,15 @@ export const useTextVapi = () => {
   const apiKey = "9bac5b6f-d901-4a44-9d24-9e0730757aa4";
 
   useEffect(() => {
+    // Filter out Facebook preload console messages
+    const originalConsoleLog = console.log;
+    console.log = (...args) => {
+      const message = args.join(' ');
+      if (!message.includes('facebook') && !message.includes('preload')) {
+        originalConsoleLog.apply(console, args);
+      }
+    };
+
     const loadVapiScript = () => {
       return new Promise((resolve, reject) => {
         // Check if script is already loaded
@@ -60,7 +68,7 @@ export const useTextVapi = () => {
             apiKey: apiKey,
             assistant: { id: assistantId },
             config: {
-              show: false, // We handle the UI ourselves
+              show: false,
               type: "text",
             }
           });
@@ -69,7 +77,7 @@ export const useTextVapi = () => {
             apiKey: apiKey,
             assistant: { id: assistantId },
             config: {
-              show: false, // We handle the UI ourselves
+              show: false,
               type: "text",
             },
           });
@@ -121,6 +129,11 @@ export const useTextVapi = () => {
     };
 
     initializeTextVapi();
+
+    // Cleanup console filter on unmount
+    return () => {
+      console.log = originalConsoleLog;
+    };
   }, []);
 
   const sendMessage = useCallback(async (text: string) => {
