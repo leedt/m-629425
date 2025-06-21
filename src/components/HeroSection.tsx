@@ -1,5 +1,4 @@
 
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
@@ -29,14 +28,14 @@ export default function HeroSection() {
       <div 
         className="absolute inset-0 bg-cover bg-center" 
         style={{
-          backgroundImage: "url('https://img-v2.gtsstatic.net/reno/imagereader.aspx?imageurl=https%3A%2F%2Fmediarem.metrolist.net%2Fmetrolist%2Flistingpics%2Fbigphoto%2F2025%2F04%2F03%2Fde76072a-b004-43e0-9683-036853ab2f5e.jpg%3Fdate%3D2025-06-13&option=N&h=472&permitphotoenlargement=false')",
+          backgroundImage: "url('/lovable-uploads/1e68d88e-c110-48df-8621-c83181a27a36.png')",
           transform: `translateY(${backgroundY}px)`,
           backgroundPosition: `center ${50 + scrollY * 0.05}%`
         }} 
       />
       
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/60" />
+      {/* Gradient overlay for better text contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/70" />
       
       {/* Content */}
       <div 
@@ -44,13 +43,13 @@ export default function HeroSection() {
         style={{ transform: `translateY(${contentY}px)` }}
       >
         <div className="max-w-3xl animate-fade-in">
-          <span className="inline-block text-white/90 text-lg mb-4 tracking-wide border-b border-white/30 pb-2">
+          <span className="inline-block text-white text-lg mb-4 tracking-wide border-b border-white/40 pb-2 font-medium">
             {t.hero.subtitle}
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 whitespace-nowrap">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 whitespace-nowrap drop-shadow-lg">
             {t.hero.title}
           </h1>
-          <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg text-white/95 mb-8 max-w-2xl mx-auto drop-shadow-md">
             {t.hero.description}
           </p>
         </div>
@@ -58,4 +57,3 @@ export default function HeroSection() {
     </section>
   );
 }
-
