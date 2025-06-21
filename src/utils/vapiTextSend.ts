@@ -1,4 +1,3 @@
-
 import { TextMessage } from '@/types/textMessage';
 
 export const sendVapiTextMessage = async (
@@ -74,9 +73,15 @@ export const sendVapiTextMessage = async (
     
     console.log('✅ Message sent successfully in', endTime - startTime, 'ms');
     
-    // Set loading to false after successful send - the response will come via events
-    setIsLoading(false);
-    console.log('🔄 Set loading to false after successful send');
+    // Keep loading state TRUE - we'll wait for response events to set it to false
+    console.log('🔄 Keeping loading state true, waiting for response events...');
+    
+    // Set up a timeout to prevent infinite loading (30 seconds)
+    setTimeout(() => {
+      console.log('⏰ Response timeout reached, setting loading to false');
+      setIsLoading(false);
+      setError('Response timeout - no response received');
+    }, 30000);
     
   } catch (err: any) {
     console.error('❌ Failed to send text message:', err);

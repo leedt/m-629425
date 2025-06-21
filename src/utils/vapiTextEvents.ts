@@ -7,104 +7,163 @@ export const setupVapiTextEvents = (
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setError: React.Dispatch<React.SetStateAction<string | null>>
 ) => {
-  // CATCH-ALL EVENT LISTENER - Fixed signature
+  console.log('🎧 Setting up Vapi text event listeners...');
+  console.log('🎧 Text instance methods available:', Object.getOwnPropertyNames(textInstance));
+  console.log('🎧 Text instance prototype methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(textInstance)));
+
+  // Set up a comprehensive catch-all event listener to see what events are actually fired
   if (typeof textInstance.on === 'function') {
-    console.log('🎯 Setting up catch-all event listener...');
-    // Try different approaches for catch-all listener
-    try {
-      if (textInstance.on.length >= 2) {
-        textInstance.on('*', (eventName: string, data: any) => {
-          console.log('🎪 CATCH-ALL EVENT (*):', eventName, data);
-        });
-      } else {
-        textInstance.on('*', (data: any) => {
-          console.log('🎪 CATCH-ALL EVENT (*):', data);
-        });
-      }
-    } catch (e) {
-      console.log('⚠️ Catch-all with * failed, trying alternative approaches');
+    console.log('🎯 Setting up enhanced catch-all event listener...');
+    
+    // Try to intercept ALL events by patching the event system
+    const originalOn = textInstance.on.bind(textInstance);
+    const originalEmit = textInstance.emit?.bind(textInstance);
+    
+    if (originalEmit) {
+      textInstance.emit = function(eventName: string, ...args: any[]) {
+        console.log('🎪 EVENT EMITTED:', eventName, args);
+        return originalEmit(eventName, ...args);
+      };
     }
-  } else {
-    console.warn('⚠️ textInstance.on is not a function, cannot set up catch-all listener');
+
+    // Set up catch-all listeners with multiple approaches
+    try {
+      textInstance.on('*', (...args: any[]) => {
+        console.log('🎪 CATCH-ALL EVENT (*):', args);
+      });
+    } catch (e) {
+      console.log('⚠️ Catch-all with * failed:', e);
+    }
+
+    // Try common event patterns
+    const eventPatterns = ['*', 'all', 'any', '**'];
+    eventPatterns.forEach(pattern => {
+      try {
+        textInstance.on(pattern, (...args: any[]) => {
+          console.log(`🎪 CATCH-ALL EVENT (${pattern}):`, args);
+        });
+      } catch (e) {
+        console.log(`⚠️ Pattern ${pattern} failed:`, e);
+      }
+    });
   }
 
-  // Set up specific event listeners with enhanced logging
-  console.log('🎧 Setting up specific event listeners...');
+  // Enhanced specific event listeners
+  const specificEvents = [
+    'message', 'response', 'text', 'chat', 'assistant-message', 'user-message',
+    'transcript', 'conversation', 'reply', 'answer', 'completion',
+    'text-response', 'chat-message', 'assistant-response', 'conversation-update',
+    'call-start', 'call-end', 'speech-start', 'speech-end',
+    'function-call', 'tool-call', 'model-output', 'stream'
+  ];
 
-  textInstance.on('message', (data: any) => {
-    console.log('📨 MESSAGE EVENT received:', data);
-    console.log('📨 Message event type:', typeof data, 'Keys:', Object.keys(data || {}));
-    console.log('📨 Message data structure:', JSON.stringify(data, null, 2));
-    
-    if (data.type === 'assistant-message' || data.message) {
-      console.log('✅ Processing assistant message:', data.message || data.text || data.content);
-      const newMessage: TextMessage = {
-        id: Date.now().toString(),
-        text: data.message || data.text || data.content,
-        sender: 'assistant',
-        timestamp: new Date()
-      };
-      console.log('💾 Adding message to state:', newMessage);
-      setMessages(prev => {
-        console.log('📝 Previous messages count:', prev.length);
-        const updated = [...prev, newMessage];
-        console.log('📝 Updated messages count:', updated.length);
-        return updated;
-      });
-      setIsLoading(false);
-      console.log('🔄 Set loading to false');
-    } else {
-      console.log('ℹ️ Message event but not assistant message, ignoring');
-    }
-  });
-
-  textInstance.on('transcript', (data: any) => {
-    console.log('📝 TRANSCRIPT EVENT received:', data);
-    console.log('📝 Transcript event type:', typeof data, 'Keys:', Object.keys(data || {}));
-    console.log('📝 Transcript data structure:', JSON.stringify(data, null, 2));
-    
-    if (data.role === 'assistant' && data.transcript) {
-      console.log('✅ Processing assistant transcript:', data.transcript);
-      const newMessage: TextMessage = {
-        id: Date.now().toString(),
-        text: data.transcript,
-        sender: 'assistant',
-        timestamp: new Date()
-      };
-      console.log('💾 Adding transcript message to state:', newMessage);
-      setMessages(prev => {
-        console.log('📝 Previous messages count:', prev.length);
-        const updated = [...prev, newMessage];
-        console.log('📝 Updated messages count:', updated.length);
-        return updated;
-      });
-      setIsLoading(false);
-      console.log('🔄 Set loading to false');
-    } else {
-      console.log('ℹ️ Transcript event but not assistant transcript, ignoring');
-    }
-  });
-
-  textInstance.on('error', (error: any) => {
-    console.error('❌ TEXT VAPI ERROR:', error);
-    console.error('❌ Error type:', typeof error, 'Keys:', Object.keys(error || {}));
-    console.error('❌ Error data structure:', JSON.stringify(error, null, 2));
-    setError(error.message || 'Failed to send message');
-    setIsLoading(false);
-    console.log('🔄 Set loading to false due to error');
-  });
-
-  // Try to set up additional potential event listeners
-  const potentialEvents = ['response', 'text-response', 'chat-message', 'assistant-response', 'conversation-update', 'call-start', 'call-end'];
-  potentialEvents.forEach(eventName => {
+  specificEvents.forEach(eventName => {
     try {
-      textInstance.on(eventName, (data: any) => {
-        console.log(`🎯 ${eventName.toUpperCase()} EVENT:`, data);
-        console.log(`🎯 ${eventName.toUpperCase()} data structure:`, JSON.stringify(data, null, 2));
+      textInstance.on(eventName, (...args: any[]) => {
+        console.log(`🎯 ${eventName.toUpperCase()} EVENT:`, args);
+        console.log(`🎯 ${eventName.toUpperCase()} args length:`, args.length);
+        
+        if (args.length > 0) {
+          const data = args[0];
+          console.log(`🎯 ${eventName.toUpperCase()} data type:`, typeof data);
+          console.log(`🎯 ${eventName.toUpperCase()} data keys:`, Object.keys(data || {}));
+          console.log(`🎯 ${eventName.toUpperCase()} data structure:`, JSON.stringify(data, null, 2));
+          
+          // Try to process as assistant message from various event types
+          if (eventName === 'message' || eventName === 'response' || eventName === 'assistant-message' || eventName === 'text-response') {
+            const messageText = data?.message || data?.text || data?.content || data?.response || data?.transcript;
+            
+            if (messageText && typeof messageText === 'string') {
+              console.log('✅ Processing assistant message from', eventName, ':', messageText);
+              const newMessage: TextMessage = {
+                id: Date.now().toString(),
+                text: messageText,
+                sender: 'assistant',
+                timestamp: new Date()
+              };
+              
+              setMessages(prev => {
+                console.log('📝 Adding message from', eventName, 'event. Previous count:', prev.length);
+                const updated = [...prev, newMessage];
+                console.log('📝 Updated count:', updated.length);
+                return updated;
+              });
+              
+              setIsLoading(false);
+              console.log('🔄 Set loading to false from', eventName, 'event');
+            }
+          }
+          
+          // Handle transcript events
+          if (eventName === 'transcript' && data?.role === 'assistant' && data?.transcript) {
+            console.log('✅ Processing assistant transcript:', data.transcript);
+            const newMessage: TextMessage = {
+              id: Date.now().toString(),
+              text: data.transcript,
+              sender: 'assistant',
+              timestamp: new Date()
+            };
+            
+            setMessages(prev => {
+              console.log('📝 Adding transcript message. Previous count:', prev.length);
+              const updated = [...prev, newMessage];
+              console.log('📝 Updated count:', updated.length);
+              return updated;
+            });
+            
+            setIsLoading(false);
+            console.log('🔄 Set loading to false from transcript event');
+          }
+        }
       });
       console.log(`✅ Successfully set up listener for: ${eventName}`);
     } catch (e) {
       console.log(`⚠️ Failed to set up listener for: ${eventName}`, e);
     }
   });
+
+  // Set up error handling
+  try {
+    textInstance.on('error', (...args: any[]) => {
+      console.error('❌ TEXT VAPI ERROR EVENT:', args);
+      const error = args[0];
+      console.error('❌ Error type:', typeof error);
+      console.error('❌ Error keys:', Object.keys(error || {}));
+      console.error('❌ Error structure:', JSON.stringify(error, null, 2));
+      
+      setError(error?.message || error?.error || 'Failed to get response');
+      setIsLoading(false);
+      console.log('🔄 Set loading to false due to error event');
+    });
+    console.log('✅ Error listener set up successfully');
+  } catch (e) {
+    console.log('⚠️ Failed to set up error listener:', e);
+  }
+
+  // Log all available methods on the instance for debugging
+  console.log('🔍 Full textInstance object structure:');
+  try {
+    console.log('🔍 Own properties:', Object.getOwnPropertyNames(textInstance));
+    console.log('🔍 Prototype properties:', Object.getOwnPropertyNames(Object.getPrototypeOf(textInstance)));
+    console.log('🔍 Constructor name:', textInstance.constructor.name);
+    
+    // Try to log the instance structure (but safely)
+    const instanceInfo: any = {};
+    Object.getOwnPropertyNames(textInstance).forEach(prop => {
+      try {
+        const value = textInstance[prop];
+        instanceInfo[prop] = typeof value;
+        if (typeof value === 'function') {
+          instanceInfo[prop] = `function (${value.length} args)`;
+        }
+      } catch (e) {
+        instanceInfo[prop] = 'access denied';
+      }
+    });
+    console.log('🔍 Instance properties info:', instanceInfo);
+  } catch (e) {
+    console.log('⚠️ Could not inspect instance:', e);
+  }
+
+  console.log('🎧 Event listeners setup completed');
 };
