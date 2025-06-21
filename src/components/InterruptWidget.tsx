@@ -1,47 +1,11 @@
 
-import { useState, useEffect } from "react";
-import { PhoneOff, Phone, MessageCircle } from "lucide-react";
+import { PhoneOff, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useVapi } from "@/hooks/useVapi";
 
 export default function InterruptWidget() {
-  const [isCallActive, setIsCallActive] = useState(false);
-  const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
-
-  const playCallSound = () => {
-    // Phone connect/rollover tone - higher pitched connect sound
-    const audio = new Audio('data:audio/wav;base64,UklGRmoBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoBAAA8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8=');
-    audio.volume = 0.4;
-    audio.play().catch(e => console.log('Could not play call sound:', e));
-  };
-
-  const playEndCallSound = () => {
-    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt259NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRtV8cBzoi2/a4diMFLIHO8tiJNwgZaLvt259NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRtV8cBzoi2/a4diMFLIHO8tiJNwgZaLvt259NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRtV8cBzoi2/a4diMFLIHO8tiJNwgZaLvt259NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRtV8cBzoi2/a4diMFLIHO8tiJNwgZaLvt259NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAkUXbbqz51NEQ5To+jRtV8cBzoi2/a4diMFLIHO8tiJNwgZaLvt259NEAxQp+PwtmMcBjSf1/S3dSUGM4/M7NSLOAk=');
-    audio.volume = 0.3;
-    audio.play().catch(e => console.log('Could not play end call sound:', e));
-  };
-
-  const handleToggleCall = () => {
-    if (isCallActive) {
-      playEndCallSound();
-    } else {
-      playCallSound();
-    }
-    setIsCallActive(!isCallActive);
-  };
-
-  // Demo logic to simulate agent speaking patterns
-  useEffect(() => {
-    if (isCallActive) {
-      const interval = setInterval(() => {
-        setIsAgentSpeaking(prev => !prev);
-      }, 3000); // Toggle every 3 seconds for demo
-
-      return () => clearInterval(interval);
-    } else {
-      setIsAgentSpeaking(false);
-    }
-  }, [isCallActive]);
+  const { callState, isAgentSpeaking, error, toggleCall, isCallActive } = useVapi();
 
   const getAvatarClasses = () => {
     return "w-24 h-24"; // Avatar itself stays consistent
@@ -55,6 +19,28 @@ export default function InterruptWidget() {
     } else {
       return "relative before:absolute before:inset-0 before:rounded-full before:shadow-lg before:shadow-primary/30 before:ring-2 before:ring-primary/20";
     }
+  };
+
+  const getCallButtonText = () => {
+    switch (callState) {
+      case 'connecting':
+        return 'Connecting...';
+      case 'connected':
+        return 'End';
+      case 'ending':
+        return 'Ending...';
+      case 'error':
+        return 'Retry';
+      default:
+        return 'Call';
+    }
+  };
+
+  const getCallButtonIcon = () => {
+    if (callState === 'connected') {
+      return <PhoneOff className="h-4 w-4 mr-2" />;
+    }
+    return <Phone className="h-4 w-4 mr-2" />;
   };
 
   return (
@@ -96,20 +82,26 @@ export default function InterruptWidget() {
           {/* Right half - Content stacked vertically */}
           <div className="w-1/2 flex flex-col justify-center p-4 space-y-4">
             <div>
-              <h3 className="font-roboto font-medium text-sm text-center">Talk to interrupt</h3>
+              <h3 className="font-roboto font-medium text-sm text-center">
+                {callState === 'connected' ? 'Talk to interrupt' : 'Talk to Morgan'}
+              </h3>
+              {error && (
+                <p className="text-xs text-red-500 text-center mt-1">{error}</p>
+              )}
             </div>
             
             <div className="border-t border-gray-200 dark:border-gray-700"></div>
             
             <div className="flex justify-center">
-              <Button variant="outline" size="sm" className="px-4 py-2 rounded-full text-sm" onClick={handleToggleCall}>
-                {isCallActive ? <>
-                    <PhoneOff className="h-4 w-4 mr-2" />
-                    End
-                  </> : <>
-                    <Phone className="h-4 w-4 mr-2" />
-                    Call
-                  </>}
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="px-4 py-2 rounded-full text-sm" 
+                onClick={toggleCall}
+                disabled={callState === 'connecting' || callState === 'ending'}
+              >
+                {getCallButtonIcon()}
+                {getCallButtonText()}
               </Button>
             </div>
           </div>
@@ -117,7 +109,7 @@ export default function InterruptWidget() {
         
         <div className="px-4 pb-4">
           <div className="text-xs text-muted-foreground">
-            Powered by
+            Powered by Vapi AI
           </div>
         </div>
       </div>
