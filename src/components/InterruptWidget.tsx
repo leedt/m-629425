@@ -46,28 +46,6 @@ export default function InterruptWidget() {
   return (
     <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-[100]">
       <div className="bg-white dark:bg-card rounded-2xl shadow-2xl border w-64">
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs text-muted-foreground whitespace-nowrap">Is this response helpful?</span>
-            <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full bg-slate-100 hover:bg-slate-200 opacity-50 overflow-hidden">
-                <img 
-                  src="/lovable-uploads/e8e9de59-d66f-4ef1-8c03-4aa1339e0780.png" 
-                  alt="thumbs up" 
-                  className="w-10 h-10 object-cover scale-125"
-                />
-              </Button>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full bg-slate-100 hover:bg-slate-200 opacity-50 overflow-hidden">
-                <img 
-                  src="/lovable-uploads/40df2e1d-cad4-495c-a5ee-5525545fa3da.png" 
-                  alt="thumbs down" 
-                  className="w-10 h-10 object-cover scale-125"
-                />
-              </Button>
-            </div>
-          </div>
-        </div>
-        
         <div className="flex">
           {/* Left half - Portrait image */}
           <div className="w-1/2 flex items-center justify-center p-4">
@@ -102,6 +80,28 @@ export default function InterruptWidget() {
               >
                 {getCallButtonIcon()}
                 {getCallButtonText()}
+              </Button>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-muted-foreground whitespace-nowrap">Is this response helpful?</span>
+            <div className="flex items-center space-x-2">
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full bg-slate-100 hover:bg-slate-200 opacity-50 overflow-hidden">
+                <img 
+                  src="/lovable-uploads/e8e9de59-d66f-4ef1-8c03-4aa1339e0780.png" 
+                  alt="thumbs up" 
+                  className="w-10 h-10 object-cover scale-125"
+                />
+              </Button>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full bg-slate-100 hover:bg-slate-200 opacity-50 overflow-hidden">
+                <img 
+                  src="/lovable-uploads/40df2e1d-cad4-495c-a5ee-5525545fa3da.png" 
+                  alt="thumbs down" 
+                  className="w-10 h-10 object-cover scale-125"
+                />
               </Button>
             </div>
           </div>
