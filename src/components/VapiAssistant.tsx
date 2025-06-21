@@ -7,7 +7,7 @@ export default function VapiAssistant() {
   const [isLoading, setIsLoading] = useState(true);
   const [callState, setCallState] = useState<'idle' | 'connecting' | 'connected' | 'ending'>('idle');
 
-  const assistant = { id: "64e64beb-2258-4f1a-8f29-2fa8eada149f" };
+  const assistantId = "64e64beb-2258-4f1a-8f29-2fa8eada149f";
   const apiKey = "9bac5b6f-d901-4a44-9d24-9e0730757aa4";
 
   useEffect(() => {
@@ -43,9 +43,18 @@ export default function VapiAssistant() {
         await loadVapiScript();
         
         if (window.vapiSDK) {
+          console.log('Initializing Vapi with config:', {
+            apiKey: apiKey,
+            assistant: assistantId,
+            config: {
+              show: false,
+              position: "bottom-right",
+            }
+          });
+
           const instance = window.vapiSDK.run({
             apiKey: apiKey,
-            assistant: assistant,
+            assistant: assistantId, // Pass as string directly, not as object
             config: {
               show: false,
               position: "bottom-right",
@@ -74,6 +83,7 @@ export default function VapiAssistant() {
         }
       } catch (error) {
         console.error('Failed to initialize Vapi:', error);
+        console.error('Error details:', error);
       } finally {
         setIsLoading(false);
       }
