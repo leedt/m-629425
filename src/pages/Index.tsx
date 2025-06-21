@@ -6,6 +6,7 @@ import BookingForm from "@/components/BookingForm";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import ChatWidget from "@/components/ChatWidget";
 import InterruptWidget from "@/components/InterruptWidget";
+import VapiAssistant from "@/components/VapiAssistant";
 import ApartmentCard, { ApartmentProps } from "@/components/ApartmentCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -85,6 +86,13 @@ export default function Index() {
       <main className="flex-1">
         {/* Hero Section */}
         <HeroSection />
+        
+        {/* Vapi Assistant Button */}
+        <section className="py-8">
+          <div className="container text-center">
+            <VapiAssistant />
+          </div>
+        </section>
         
         {/* Welcome Section */}
         <section id="welcome" className="section">
