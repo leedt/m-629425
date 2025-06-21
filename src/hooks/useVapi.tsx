@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 
 export type CallState = 'idle' | 'connecting' | 'connected' | 'ending' | 'error';
@@ -77,15 +76,8 @@ export const useVapi = () => {
       setError(null);
       
       console.log('Attempting to start call...');
-      // Try with assistant parameter first, then fallback to no parameters
-      try {
-        await window.vapiInstance.start({
-          assistant: "64e64beb-2258-4f1a-8f29-2fa8eada149f"
-        });
-      } catch (paramError) {
-        console.log('Failed with parameters, trying without:', paramError);
-        await window.vapiInstance.start();
-      }
+      // The assistant is already configured during vapiSDK.run(), so no parameters needed
+      await window.vapiInstance.start();
       console.log('Call started successfully');
       
     } catch (err: any) {
