@@ -1,6 +1,6 @@
 
 interface VapiInstance {
-  start: () => Promise<void>;
+  start: (assistant?: string) => Promise<void>;
   stop: () => Promise<void>;
   on: (event: string, callback: (data?: any) => void) => void;
   off: (event: string, callback: (data?: any) => void) => void;
@@ -18,6 +18,7 @@ declare global {
   interface Window {
     vapiSDK?: VapiSDK;
     vapiInstance?: VapiInstance;
+    vapiAssistantId?: string;
   }
 }
 

@@ -79,6 +79,8 @@ export default function VapiAssistant() {
 
           setVapiInstance(instance);
           window.vapiInstance = instance;
+          // Store assistant ID globally for useVapi hook
+          window.vapiAssistantId = assistantId;
           console.log('Vapi initialized successfully');
         }
       } catch (error) {

@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 
 export type CallState = 'idle' | 'connecting' | 'connected' | 'ending' | 'error';
@@ -76,8 +77,17 @@ export const useVapi = () => {
       setError(null);
       
       console.log('Attempting to start call...');
-      // The assistant is already configured during vapiSDK.run(), so no parameters needed
-      await window.vapiInstance.start();
+      
+      // Try passing the assistant ID when starting the call
+      const assistantId = window.vapiAssistantId;
+      if (assistantId) {
+        console.log('Starting call with assistant ID:', assistantId);
+        await window.vapiInstance.start(assistantId);
+      } else {
+        console.log('Starting call without explicit assistant ID (using config)');
+        await window.vapiInstance.start();
+      }
+      
       console.log('Call started successfully');
       
     } catch (err: any) {
