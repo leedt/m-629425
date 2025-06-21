@@ -111,7 +111,7 @@ export default function Index() {
                 <p className="text-muted-foreground mb-8">
                   {t.home.welcome.description2}
                 </p>
-                <Button asChild className="btn-primary">
+                <Button asChild variant="darkBlue" className="rounded-full px-6 py-2.5 font-medium">
                   <Link to="/about">
                     {t.home.welcome.learnMore} <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
@@ -184,15 +184,17 @@ export default function Index() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredApartments.map((apartment, index) => <div key={apartment.id} className="animate-fade-in" style={{
-              animationDelay: `${(index + 1) * 100}ms`
-            }}>
+              {featuredApartments.map((apartment, index) => (
+                <div key={apartment.id} className="animate-fade-in" style={{
+                  animationDelay: `${(index + 1) * 100}ms`
+                }}>
                   <ApartmentCard apartment={apartment} />
-                </div>)}
+                </div>
+              ))}
             </div>
             
             <div className="text-center mt-12">
-              <Button asChild className="btn-primary">
+              <Button asChild variant="darkBlue" className="rounded-full px-6 py-2.5 font-medium">
                 <Link to="/apartments">
                   {t.home.featuredApartments.viewAll} <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -243,7 +245,7 @@ export default function Index() {
               <p className="text-muted-foreground mb-8">
                 {t.home.cta.description}
               </p>
-              <Button asChild size="lg" className="btn-primary">
+              <Button asChild size="lg" variant="darkBlue" className="rounded-full px-8">
                 <Link to="/booking">{t.home.cta.bookNow}</Link>
               </Button>
             </div>

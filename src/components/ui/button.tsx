@@ -21,6 +21,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         hero: "bg-white/20 text-white backdrop-blur-sm border border-white/30 hover:bg-white/30 dark:bg-black/30 dark:border-white/10 dark:hover:bg-black/40 transition-all duration-300 shadow-lg hover:shadow-xl",
         heroSolid: "bg-sea text-white hover:bg-sea-dark dark:bg-sea-dark dark:hover:bg-sea transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]",
+        darkBlue: "bg-blue-800 text-white hover:bg-blue-900 dark:bg-blue-900 dark:hover:bg-blue-800 transition-all duration-300",
       },
       size: {
         default: "h-10 px-4 py-2",
