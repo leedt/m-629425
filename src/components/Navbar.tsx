@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, Phone } from "lucide-react";
@@ -61,14 +62,14 @@ export default function Navbar() {
           {/* Phone Number */}
           <a 
             href="tel:+19164324770" 
-            className="flex items-center space-x-2 text-primary font-semibold hover:text-primary/80 transition-colors bg-primary/10 px-4 py-2 rounded-full border border-primary/20 hover:bg-primary/20"
+            className="relative z-[100] flex items-center space-x-2 text-primary font-semibold hover:text-primary/80 transition-colors bg-primary/10 px-4 py-2 rounded-full border border-primary/20 hover:bg-primary/20"
           >
             <Phone className="h-4 w-4" />
             <span>(916) 432-4770</span>
           </a>
           
           <ThemeToggle />
-          <Button asChild className="btn-primary">
+          <Button asChild className="btn-primary relative z-[100]">
             <Link to="/booking">{t.nav.bookNow}</Link>
           </Button>
         </div>
@@ -114,7 +115,7 @@ export default function Navbar() {
               <div className="mb-6">
                 <a 
                   href="tel:+19164324770" 
-                  className="flex items-center space-x-2 text-primary font-semibold hover:text-primary/80 transition-colors bg-primary/10 px-4 py-3 rounded-full border border-primary/20 hover:bg-primary/20 w-full justify-center"
+                  className="relative z-[100] flex items-center space-x-2 text-primary font-semibold hover:text-primary/80 transition-colors bg-primary/10 px-4 py-3 rounded-full border border-primary/20 hover:bg-primary/20 w-full justify-center"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <Phone className="h-4 w-4" />
@@ -137,7 +138,7 @@ export default function Navbar() {
               </ul>
             </div>
             
-            <Button asChild className="w-full btn-primary mt-6">
+            <Button asChild className="w-full btn-primary mt-6 relative z-[100]">
               <Link to="/booking" onClick={() => setMobileMenuOpen(false)}>
                 {t.nav.bookNow}
               </Link>
