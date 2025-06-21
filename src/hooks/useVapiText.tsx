@@ -23,13 +23,43 @@ export const useVapiText = () => {
   useEffect(() => {
     const setupTextListeners = () => {
       if (window.vapiInstance) {
-        // Listen for text responses from the assistant
+        console.log('Setting up Vapi text listeners...');
+        
+        // Listen for any message events
         window.vapiInstance.on('message', (data: any) => {
-          console.log('Received text message:', data);
-          if (data.type === 'assistant-message' || data.message) {
+          console.log('Received Vapi message event:', data);
+          
+          // Handle different message types
+          if (data.type === 'transcript' && data.role === 'assistant') {
+            console.log('Processing assistant transcript:', data.transcript);
+            const newMessage: TextMessage = {
+              id: Date.now().toString(),
+              text: data.transcript,
+              sender: 'assistant',
+              timestamp: new Date()
+            };
+            setMessages(prev => [...prev, newMessage]);
+            setIsLoading(false);
+          } else if (data.type === 'assistant-message' || data.message) {
+            console.log('Processing assistant message:', data);
             const newMessage: TextMessage = {
               id: Date.now().toString(),
               text: data.message || data.text || data.content,
+              sender: 'assistant',
+              timestamp: new Date()
+            };
+            setMessages(prev => [...prev, newMessage]);
+            setIsLoading(false);
+          }
+        });
+
+        // Listen for transcript events specifically
+        window.vapiInstance.on('transcript', (data: any) => {
+          console.log('Received transcript event:', data);
+          if (data.role === 'assistant' && data.transcript) {
+            const newMessage: TextMessage = {
+              id: Date.now().toString(),
+              text: data.transcript,
               sender: 'assistant',
               timestamp: new Date()
             };
@@ -44,14 +74,18 @@ export const useVapiText = () => {
           setError(error.message || 'Failed to send message');
           setIsLoading(false);
         });
+
+        console.log('Vapi text listeners set up successfully');
       }
     };
 
     // Check if Vapi is ready, if not wait for it
     const checkVapiReady = () => {
       if (window.vapiInstance) {
+        console.log('Vapi instance ready for text messaging');
         setupTextListeners();
       } else {
+        console.log('Waiting for Vapi instance...');
         setTimeout(checkVapiReady, 100);
       }
     };
@@ -60,7 +94,18 @@ export const useVapiText = () => {
   }, []);
 
   const sendMessage = useCallback(async (text: string) => {
-    if (!text.trim() || !window.vapiInstance) return;
+    if (!text.trim()) {
+      console.log('Empty message, not sending');
+      return;
+    }
+
+    if (!window.vapiInstance) {
+      console.error('Vapi instance not available');
+      setError('Vapi not initialized');
+      return;
+    }
+
+    console.log('Sending message:', text.trim());
 
     const userMessage: TextMessage = {
       id: Date.now().toString(),
@@ -74,8 +119,19 @@ export const useVapiText = () => {
     setError(null);
 
     try {
-      // Send message to Vapi assistant
-      await window.vapiInstance.send(text.trim());
+      // Try different methods to send the message
+      if (typeof window.vapiInstance.send === 'function') {
+        console.log('Using send method');
+        await window.vapiInstance.send(text.trim());
+      } else if (typeof window.vapiInstance.sendMessage === 'function') {
+        console.log('Using sendMessage method');
+        await window.vapiInstance.sendMessage(text.trim());
+      } else {
+        console.log('Available methods on Vapi instance:', Object.keys(window.vapiInstance));
+        throw new Error('No text messaging method available on Vapi instance');
+      }
+      
+      console.log('Message sent successfully');
     } catch (err: any) {
       console.error('Failed to send message:', err);
       setError(err.message || 'Failed to send message');
