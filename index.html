@@ -16,34 +16,41 @@
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     
+    <button onclick="startCall()">Talk to AI Assistant</button>
+
     <!-- Vapi AI Script -->
     <script>
       var vapiInstance = null;
-      const assistant = { id: "64e64beb-2258-4f1a-8f29-2fa8eada149f" }; 
+      const assistant = { id: "64e64beb-2258-4f1a-8f29-2fa8eada149f" };
       const apiKey = "9bac5b6f-d901-4a44-9d24-9e0730757aa4";
-      
+
       (function (d, t) {
         var g = document.createElement(t),
           s = d.getElementsByTagName(t)[0];
-        g.src =
-          "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+        g.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
         g.defer = true;
         g.async = true;
         s.parentNode.insertBefore(g, s);
+
         g.onload = function () {
           vapiInstance = window.vapiSDK.run({
             apiKey: apiKey,
-            assistant: assistant, 
+            assistant: assistant,
             config: {
               show: false,
               position: "bottom-right",
-              offset: "40px",
-              width: "50px",
-              height: "50px",
             },
           });
         };
       })(document, "script");
+
+      function startCall() {
+        if (vapiInstance) {
+          vapiInstance.start().catch(console.error);
+        } else {
+          console.log("Vapi is not initialized yet.");
+        }
+      }
     </script>
     
     <script type="module" src="/src/main.tsx"></script>
