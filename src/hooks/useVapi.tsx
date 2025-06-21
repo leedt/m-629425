@@ -60,19 +60,15 @@ export const useVapi = () => {
       return;
     }
 
-    // Log instance state for debugging
-    console.log('Vapi instance state:', {
-      instance: window.vapiInstance,
-      hasStart: typeof window.vapiInstance.start === 'function',
-      hasStop: typeof window.vapiInstance.stop === 'function'
-    });
-
     try {
       setCallState('connecting');
       setError(null);
       
-      console.log('Attempting to start call...');
-      await window.vapiInstance.start();
+      console.log('Attempting to start call with assistant ID...');
+      // Pass the assistant configuration directly to the start method
+      await window.vapiInstance.start({
+        assistant: "64e64beb-2258-4f1a-8f29-2fa8eada149f"
+      });
       console.log('Call started successfully');
       
     } catch (err: any) {
