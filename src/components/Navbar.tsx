@@ -62,7 +62,7 @@ export default function Navbar() {
           {/* Phone Number */}
           <a 
             href="tel:+19164324770" 
-            className="relative z-[100] flex items-center space-x-2 text-white font-semibold hover:text-white/80 transition-colors border-2 border-white px-4 py-2 rounded-[35px]"
+            className="relative z-[100] flex items-center space-x-2 text-white font-semibold hover:text-white/90 transition-colors bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 px-4 py-2 rounded-[35px] shadow-lg"
           >
             <Phone className="h-4 w-4" />
             <span>(916) 432-4770</span>
@@ -112,7 +112,7 @@ export default function Navbar() {
               <div className="mb-6">
                 <a 
                   href="tel:+19164324770" 
-                  className="relative z-[100] flex items-center space-x-2 text-primary font-semibold hover:text-primary/80 transition-colors bg-primary/10 px-4 py-3 rounded-full border border-primary/20 hover:bg-primary/20 w-full justify-center"
+                  className="relative z-[100] flex items-center space-x-2 text-white font-semibold hover:text-white/90 transition-colors bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 px-4 py-3 rounded-full shadow-lg w-full justify-center"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <Phone className="h-4 w-4" />
