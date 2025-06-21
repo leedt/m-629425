@@ -96,7 +96,7 @@ export default function InterruptWidget() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="px-4 py-2 rounded-full text-sm" 
+                className="px-4 py-2 rounded-full text-sm bg-primary text-white hover:bg-primary/90 border-primary" 
                 onClick={toggleCall}
                 disabled={callState === 'connecting' || callState === 'ending'}
               >
@@ -108,7 +108,7 @@ export default function InterruptWidget() {
         </div>
         
         <div className="px-4 pb-4">
-          <div className="text-xs text-muted-foreground">
+          <div className="text-xs text-white bg-primary rounded-full px-3 py-1 text-center">
             Powered by Vapi AI
           </div>
         </div>
