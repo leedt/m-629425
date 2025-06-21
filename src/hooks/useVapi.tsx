@@ -11,6 +11,9 @@ export const useVapi = () => {
   useEffect(() => {
     const checkVapiReady = () => {
       if (window.vapiInstance) {
+        console.log('Vapi instance found:', window.vapiInstance);
+        console.log('Vapi instance methods:', Object.getOwnPropertyNames(window.vapiInstance));
+        
         // Set up event listeners
         window.vapiInstance.on('call-start', () => {
           console.log('Call started');
@@ -40,6 +43,7 @@ export const useVapi = () => {
           setCallState('error');
         });
       } else {
+        console.log('Vapi instance not ready yet, checking again...');
         // Check again in 100ms if Vapi isn't ready yet
         setTimeout(checkVapiReady, 100);
       }
@@ -49,17 +53,47 @@ export const useVapi = () => {
   }, []);
 
   const startCall = useCallback(async () => {
+    console.log('Starting call...');
+    
     if (!window.vapiInstance) {
+      console.error('Vapi instance not found');
       setError('Vapi not initialized');
       return;
     }
+
+    // Log instance state for debugging
+    console.log('Vapi instance state:', {
+      instance: window.vapiInstance,
+      hasStart: typeof window.vapiInstance.start === 'function',
+      hasStop: typeof window.vapiInstance.stop === 'function'
+    });
 
     try {
       setCallState('connecting');
       setError(null);
       
-      // Call start without parameters - assistant ID is already configured in the instance
-      await window.vapiInstance.start();
+      console.log('Attempting to start call without parameters...');
+      
+      // First attempt: Call start without parameters (assistant configured in instance)
+      try {
+        await window.vapiInstance.start();
+        console.log('Call started successfully without parameters');
+      } catch (firstError: any) {
+        console.warn('First attempt failed:', firstError.message);
+        
+        // Fallback: Try with explicit assistant ID
+        console.log('Attempting fallback with explicit assistant ID...');
+        try {
+          await window.vapiInstance.start({
+            assistant: "64e64beb-2258-4f1a-8f29-2fa8eada149f"
+          });
+          console.log('Call started successfully with explicit assistant ID');
+        } catch (secondError: any) {
+          console.error('Both attempts failed. First error:', firstError.message, 'Second error:', secondError.message);
+          throw secondError;
+        }
+      }
+      
     } catch (err: any) {
       console.error('Failed to start call:', err);
       setError(err.message || 'Failed to start call');
