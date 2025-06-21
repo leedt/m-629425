@@ -62,7 +62,7 @@ export default function Navbar() {
           {/* Phone Number */}
           <a 
             href="tel:+19164324770" 
-            className="relative z-[100] flex items-center space-x-2 text-white font-semibold hover:text-white/80 transition-colors"
+            className="relative z-[100] flex items-center space-x-2 text-white font-semibold hover:text-white/80 transition-colors border-2 border-white px-4 py-2 rounded-[35px]"
           >
             <Phone className="h-4 w-4" />
             <span>(916) 432-4770</span>
