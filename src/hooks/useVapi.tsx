@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 
 export type CallState = 'idle' | 'connecting' | 'connected' | 'ending' | 'error';
@@ -11,7 +12,6 @@ export const useVapi = () => {
     const checkVapiReady = () => {
       if (window.vapiInstance) {
         console.log('Vapi instance found:', window.vapiInstance);
-        console.log('Vapi instance methods:', Object.getOwnPropertyNames(window.vapiInstance));
         
         // Set up event listeners
         window.vapiInstance.on('call-start', () => {
@@ -43,7 +43,6 @@ export const useVapi = () => {
         });
       } else {
         console.log('Vapi instance not ready yet, checking again...');
-        // Check again in 100ms if Vapi isn't ready yet
         setTimeout(checkVapiReady, 100);
       }
     };
@@ -64,11 +63,9 @@ export const useVapi = () => {
       setCallState('connecting');
       setError(null);
       
-      console.log('Attempting to start call with assistant ID...');
-      // Pass the assistant configuration directly to the start method
-      await window.vapiInstance.start({
-        assistant: "64e64beb-2258-4f1a-8f29-2fa8eada149f"
-      });
+      console.log('Attempting to start call...');
+      // The assistant is already configured during vapiSDK.run(), so no parameters needed
+      await window.vapiInstance.start();
       console.log('Call started successfully');
       
     } catch (err: any) {
