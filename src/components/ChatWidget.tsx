@@ -25,7 +25,7 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/20" style={{ paddingTop: '104px' }}>
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/20" style={{ paddingTop: '184px' }}>
       <div className="bg-white dark:bg-card rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-primary to-primary/80 p-4 text-white bg-gray-100">
