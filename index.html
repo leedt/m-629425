@@ -19,7 +19,7 @@
     <!-- Vapi AI Script -->
     <script>
       var vapiInstance = null;
-      const assistant = "64e64beb-2258-4f1a-8f29-2fa8eada149f";
+      const assistant = { id: "64e64beb-2258-4f1a-8f29-2fa8eada149f" }; 
       const apiKey = "9bac5b6f-d901-4a44-9d24-9e0730757aa4";
       
       (function (d, t) {
@@ -33,7 +33,7 @@
         g.onload = function () {
           vapiInstance = window.vapiSDK.run({
             apiKey: apiKey,
-            assistant: assistant,
+            assistant: assistant, 
             config: {
               show: false,
               position: "bottom-right",
