@@ -91,12 +91,23 @@ export const useTextVapi = () => {
           console.log('🔍 Available methods on instance:', Object.getOwnPropertyNames(textInstance));
           console.log('🔍 Instance prototype methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(textInstance)));
 
-          // CATCH-ALL EVENT LISTENER - This will capture EVERY event
+          // Enhanced instance verification
+          console.log('🔧 Instance verification:');
+          console.log('🔧 - Instance type:', typeof textInstance);
+          console.log('🔧 - Has .on method:', typeof textInstance.on === 'function');
+          console.log('🔧 - Has .send method:', typeof textInstance.send === 'function');
+
+          // CATCH-ALL EVENT LISTENER - Fixed signature
           if (typeof textInstance.on === 'function') {
             console.log('🎯 Setting up catch-all event listener...');
-            textInstance.on('*', (eventName: string, data: any) => {
-              console.log('🎪 CATCH-ALL EVENT:', eventName, 'Data:', data);
-            });
+            // Try different approaches for catch-all listener
+            try {
+              textInstance.on('*', (data: any) => {
+                console.log('🎪 CATCH-ALL EVENT (*):', data);
+              });
+            } catch (e) {
+              console.log('⚠️ Catch-all with * failed, trying alternative approaches');
+            }
           } else {
             console.warn('⚠️ textInstance.on is not a function, cannot set up catch-all listener');
           }
@@ -107,6 +118,7 @@ export const useTextVapi = () => {
           textInstance.on('message', (data: any) => {
             console.log('📨 MESSAGE EVENT received:', data);
             console.log('📨 Message event type:', typeof data, 'Keys:', Object.keys(data || {}));
+            console.log('📨 Message data structure:', JSON.stringify(data, null, 2));
             
             if (data.type === 'assistant-message' || data.message) {
               console.log('✅ Processing assistant message:', data.message || data.text || data.content);
@@ -133,6 +145,7 @@ export const useTextVapi = () => {
           textInstance.on('transcript', (data: any) => {
             console.log('📝 TRANSCRIPT EVENT received:', data);
             console.log('📝 Transcript event type:', typeof data, 'Keys:', Object.keys(data || {}));
+            console.log('📝 Transcript data structure:', JSON.stringify(data, null, 2));
             
             if (data.role === 'assistant' && data.transcript) {
               console.log('✅ Processing assistant transcript:', data.transcript);
@@ -159,30 +172,45 @@ export const useTextVapi = () => {
           textInstance.on('error', (error: any) => {
             console.error('❌ TEXT VAPI ERROR:', error);
             console.error('❌ Error type:', typeof error, 'Keys:', Object.keys(error || {}));
+            console.error('❌ Error data structure:', JSON.stringify(error, null, 2));
             setError(error.message || 'Failed to send message');
             setIsLoading(false);
             console.log('🔄 Set loading to false due to error');
           });
 
           // Try to set up additional potential event listeners
-          const potentialEvents = ['response', 'text-response', 'chat-message', 'assistant-response', 'conversation-update'];
+          const potentialEvents = ['response', 'text-response', 'chat-message', 'assistant-response', 'conversation-update', 'call-start', 'call-end'];
           potentialEvents.forEach(eventName => {
-            textInstance.on(eventName, (data: any) => {
-              console.log(`🎯 ${eventName.toUpperCase()} EVENT:`, data);
-            });
+            try {
+              textInstance.on(eventName, (data: any) => {
+                console.log(`🎯 ${eventName.toUpperCase()} EVENT:`, data);
+                console.log(`🎯 ${eventName.toUpperCase()} data structure:`, JSON.stringify(data, null, 2));
+              });
+              console.log(`✅ Successfully set up listener for: ${eventName}`);
+            } catch (e) {
+              console.log(`⚠️ Failed to set up listener for: ${eventName}`, e);
+            }
           });
 
           // Store in a different global variable to avoid conflicts with voice instance
           window.vapiTextInstance = textInstance;
           console.log('✅ Text Vapi initialized successfully and stored in window.vapiTextInstance');
           
-          // Periodic health check
-          setInterval(() => {
+          // Enhanced health check
+          const healthCheck = () => {
             console.log('💓 Health check - vapiTextInstance exists:', !!window.vapiTextInstance);
             if (window.vapiTextInstance) {
               console.log('💓 Health check - instance type:', typeof window.vapiTextInstance);
+              console.log('💓 Health check - has send method:', typeof window.vapiTextInstance.send === 'function');
+              console.log('💓 Health check - has on method:', typeof window.vapiTextInstance.on === 'function');
             }
-          }, 30000); // Every 30 seconds
+          };
+          
+          // Initial health check
+          healthCheck();
+          
+          // Periodic health check
+          setInterval(healthCheck, 30000); // Every 30 seconds
           
         } else {
           console.error('❌ window.vapiSDK is not available after loading');
@@ -216,11 +244,22 @@ export const useTextVapi = () => {
     if (window.vapiTextInstance) {
       console.log('🔍 Available methods on vapiTextInstance:', Object.getOwnPropertyNames(window.vapiTextInstance));
       console.log('🔍 send method exists:', typeof window.vapiTextInstance.send);
+      console.log('🔍 send method type:', typeof window.vapiTextInstance.send);
     }
 
     if (!window.vapiTextInstance) {
       console.error('❌ Text Vapi instance not available');
       setError('Text messaging not initialized');
+      return;
+    }
+
+    // Check if send method exists
+    const hasSendMethod = typeof window.vapiTextInstance.send === 'function';
+    console.log('🔍 Send method available:', hasSendMethod);
+    
+    if (!hasSendMethod) {
+      console.error('❌ Send method not available on instance');
+      setError('Send method not available');
       return;
     }
 
@@ -247,6 +286,10 @@ export const useTextVapi = () => {
     try {
       console.log('📡 Attempting to send message via vapiTextInstance.send()...');
       console.log('📡 Message being sent:', text.trim());
+      console.log('📡 Send method details:', {
+        type: typeof window.vapiTextInstance.send,
+        isFunction: typeof window.vapiTextInstance.send === 'function'
+      });
       
       const startTime = Date.now();
       const result = await window.vapiTextInstance.send(text.trim());
@@ -258,23 +301,30 @@ export const useTextVapi = () => {
       
       if (result && typeof result === 'object') {
         console.log('✅ Send result keys:', Object.keys(result));
+        console.log('✅ Send result structure:', JSON.stringify(result, null, 2));
       }
       
     } catch (err: any) {
       const endTime = Date.now();
-      console.error('❌ Failed to send text message after', endTime, 'ms:', err);
+      console.error('❌ Failed to send text message:', err);
       console.error('❌ Error type:', typeof err);
       console.error('❌ Error message:', err.message);
       console.error('❌ Error stack:', err.stack);
+      console.error('❌ Full error object:', JSON.stringify(err, null, 2));
       setError(err.message || 'Failed to send message');
       setIsLoading(false);
       console.log('🔄 Set loading to false due to send error');
     }
   }, []);
 
-  // Log state changes
+  // Enhanced state change logging
   useEffect(() => {
     console.log('📊 Messages state changed, count:', messages.length);
+    console.log('📊 Current messages:', messages.map(m => ({
+      id: m.id,
+      sender: m.sender,
+      text: m.text.substring(0, 50) + (m.text.length > 50 ? '...' : '')
+    })));
   }, [messages]);
 
   useEffect(() => {
