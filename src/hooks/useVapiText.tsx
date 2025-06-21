@@ -119,18 +119,9 @@ export const useVapiText = () => {
     setError(null);
 
     try {
-      // Try different methods to send the message
-      if (typeof window.vapiInstance.send === 'function') {
-        console.log('Using send method');
-        await window.vapiInstance.send(text.trim());
-      } else if (typeof window.vapiInstance.sendMessage === 'function') {
-        console.log('Using sendMessage method');
-        await window.vapiInstance.sendMessage(text.trim());
-      } else {
-        console.log('Available methods on Vapi instance:', Object.keys(window.vapiInstance));
-        throw new Error('No text messaging method available on Vapi instance');
-      }
-      
+      // Use the send method that exists on VapiInstance
+      console.log('Using send method');
+      await window.vapiInstance.send(text.trim());
       console.log('Message sent successfully');
     } catch (err: any) {
       console.error('Failed to send message:', err);
