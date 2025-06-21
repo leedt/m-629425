@@ -62,16 +62,13 @@ export default function Navbar() {
           {/* Phone Number */}
           <a 
             href="tel:+19164324770" 
-            className="relative z-[100] flex items-center space-x-2 text-primary font-semibold hover:text-primary/80 transition-colors bg-primary/10 px-4 py-2 rounded-full border border-primary/20 hover:bg-primary/20"
+            className="relative z-[100] flex items-center space-x-2 text-white font-semibold hover:text-white/80 transition-colors"
           >
             <Phone className="h-4 w-4" />
             <span>(916) 432-4770</span>
           </a>
           
           <ThemeToggle />
-          <Button asChild className="btn-primary relative z-[100]">
-            <Link to="/booking">{t.nav.bookNow}</Link>
-          </Button>
         </div>
 
         {/* Mobile Navigation */}
@@ -137,12 +134,6 @@ export default function Navbar() {
                 ))}
               </ul>
             </div>
-            
-            <Button asChild className="w-full btn-primary mt-6 relative z-[100]">
-              <Link to="/booking" onClick={() => setMobileMenuOpen(false)}>
-                {t.nav.bookNow}
-              </Link>
-            </Button>
           </div>
         </div>
       </div>
