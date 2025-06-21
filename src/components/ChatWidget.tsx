@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { useVapiText } from "@/hooks/useVapiText";
+import { useTextVapi } from "@/hooks/useTextVapi";
 
 export default function ChatWidget() {
   const [message, setMessage] = useState("");
-  const { messages, isLoading, error, sendMessage } = useVapiText();
+  const { messages, isLoading, error, sendMessage } = useTextVapi();
 
   const handleSendMessage = () => {
     if (message.trim()) {
