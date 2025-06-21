@@ -44,7 +44,7 @@ export default function InterruptWidget() {
   };
 
   return (
-    <div className="fixed top-1/2 right-6 transform -translate-y-1/2 z-[100]">
+    <div className="fixed bottom-8 right-6 z-[100]">
       <div className="bg-white dark:bg-card rounded-2xl shadow-2xl border w-64">
         <div className="flex">
           {/* Left half - Portrait image */}
