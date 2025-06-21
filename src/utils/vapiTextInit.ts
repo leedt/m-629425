@@ -1,10 +1,20 @@
 
 export const initializeVapiText = async (assistantId: string, apiKey: string) => {
-  // Filter out Facebook preload console messages
+  // Filter out Facebook preload console messages with safe argument handling
   const originalConsoleLog = console.log;
   console.log = (...args) => {
-    const message = args.join(' ');
-    if (!message.includes('facebook') && !message.includes('preload')) {
+    try {
+      const message = args.map(arg => {
+        if (typeof arg === 'string') return arg;
+        if (typeof arg === 'object') return JSON.stringify(arg);
+        return String(arg);
+      }).join(' ');
+      
+      if (!message.includes('facebook') && !message.includes('preload')) {
+        originalConsoleLog.apply(console, args);
+      }
+    } catch (e) {
+      // If logging fails, use original console
       originalConsoleLog.apply(console, args);
     }
   };
@@ -60,14 +70,19 @@ export const initializeVapiText = async (assistantId: string, apiKey: string) =>
       },
     });
 
-    // Log instance details
-    console.log('📋 Text instance created:', textInstance);
-    console.log('🔍 Available methods on instance:', Object.getOwnPropertyNames(textInstance));
-    console.log('🔍 Instance prototype methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(textInstance)));
+    // Log instance details safely
+    console.log('📋 Text instance created');
+    console.log('🔍 Instance type:', typeof textInstance);
+    
+    try {
+      console.log('🔍 Available methods on instance:', Object.getOwnPropertyNames(textInstance));
+      console.log('🔍 Instance prototype methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(textInstance)));
+    } catch (e) {
+      console.log('⚠️ Could not inspect instance methods');
+    }
 
     // Enhanced instance verification
     console.log('🔧 Instance verification:');
-    console.log('🔧 - Instance type:', typeof textInstance);
     console.log('🔧 - Has .on method:', typeof textInstance.on === 'function');
     console.log('🔧 - Has .send method:', typeof textInstance.send === 'function');
 
@@ -75,11 +90,10 @@ export const initializeVapiText = async (assistantId: string, apiKey: string) =>
     window.vapiTextInstance = textInstance;
     console.log('✅ Text Vapi initialized successfully and stored in window.vapiTextInstance');
     
-    // Enhanced health check
+    // Simplified health check
     const healthCheck = () => {
       console.log('💓 Health check - vapiTextInstance exists:', !!window.vapiTextInstance);
       if (window.vapiTextInstance) {
-        console.log('💓 Health check - instance type:', typeof window.vapiTextInstance);
         console.log('💓 Health check - has send method:', typeof window.vapiTextInstance.send === 'function');
         console.log('💓 Health check - has on method:', typeof window.vapiTextInstance.on === 'function');
       }
@@ -88,8 +102,8 @@ export const initializeVapiText = async (assistantId: string, apiKey: string) =>
     // Initial health check
     healthCheck();
     
-    // Periodic health check
-    setInterval(healthCheck, 30000); // Every 30 seconds
+    // Periodic health check every 30 seconds
+    setInterval(healthCheck, 30000);
 
     return textInstance;
   } else {

@@ -1,4 +1,3 @@
-
 import { TextMessage } from '@/types/textMessage';
 
 export const sendVapiTextMessage = async (
@@ -78,18 +77,20 @@ export const sendVapiTextMessage = async (
     console.log('✅ Send result:', result);
     console.log('✅ Send result type:', typeof result);
     
-    // Check if the result contains immediate response data (only if result is not undefined/null)
+    // Check if the result contains immediate response data with proper type guards
     if (result !== undefined && result !== null && typeof result === 'object') {
       console.log('🔍 Send result structure:', JSON.stringify(result, null, 2));
       
       // Check for immediate response in the result
       const responseFields = ['message', 'text', 'response', 'content', 'reply'];
       for (const field of responseFields) {
-        if (result[field] && typeof result[field] === 'string') {
-          console.log(`✅ Found immediate response in result.${field}:`, result[field]);
+        // Type assertion after null check to satisfy TypeScript
+        const resultObj = result as Record<string, any>;
+        if (resultObj[field] && typeof resultObj[field] === 'string') {
+          console.log(`✅ Found immediate response in result.${field}:`, resultObj[field]);
           const immediateMessage: TextMessage = {
             id: Date.now().toString(),
-            text: result[field],
+            text: resultObj[field],
             sender: 'assistant',
             timestamp: new Date()
           };
@@ -104,7 +105,7 @@ export const sendVapiTextMessage = async (
     // If no immediate response, keep loading state and wait for events
     console.log('🔄 No immediate response, keeping loading state true...');
     
-    // Set up a timeout to prevent infinite loading (reduced to 15 seconds for testing)
+    // Set up a timeout to prevent infinite loading
     setTimeout(() => {
       console.log('⏰ Response timeout reached, setting loading to false');
       setIsLoading(false);
