@@ -21,6 +21,12 @@ export const sendVapiTextMessage = async (
     console.log('🔍 Available methods on vapiTextInstance:', Object.getOwnPropertyNames(window.vapiTextInstance));
     console.log('🔍 send method exists:', typeof window.vapiTextInstance.send);
     console.log('🔍 send method type:', typeof window.vapiTextInstance.send);
+    
+    // Additional method inspection
+    console.log('🔍 All instance methods:');
+    Object.getOwnPropertyNames(window.vapiTextInstance).forEach(prop => {
+      console.log(`🔍 - ${prop}: ${typeof window.vapiTextInstance[prop]}`);
+    });
   }
 
   if (!window.vapiTextInstance) {
@@ -62,26 +68,47 @@ export const sendVapiTextMessage = async (
   try {
     console.log('📡 Attempting to send message via vapiTextInstance.send()...');
     console.log('📡 Message being sent:', text.trim());
-    console.log('📡 Send method details:', {
-      type: typeof window.vapiTextInstance.send,
-      isFunction: typeof window.vapiTextInstance.send === 'function'
-    });
     
     const startTime = Date.now();
-    await window.vapiTextInstance.send(text.trim());
+    const result = await window.vapiTextInstance.send(text.trim());
     const endTime = Date.now();
     
     console.log('✅ Message sent successfully in', endTime - startTime, 'ms');
+    console.log('✅ Send result:', result);
+    console.log('✅ Send result type:', typeof result);
     
-    // Keep loading state TRUE - we'll wait for response events to set it to false
-    console.log('🔄 Keeping loading state true, waiting for response events...');
+    // Check if the result contains immediate response data
+    if (result && typeof result === 'object') {
+      console.log('🔍 Send result structure:', JSON.stringify(result, null, 2));
+      
+      // Check for immediate response in the result
+      const responseFields = ['message', 'text', 'response', 'content', 'reply'];
+      for (const field of responseFields) {
+        if (result[field] && typeof result[field] === 'string') {
+          console.log(`✅ Found immediate response in result.${field}:`, result[field]);
+          const immediateMessage: TextMessage = {
+            id: Date.now().toString(),
+            text: result[field],
+            sender: 'assistant',
+            timestamp: new Date()
+          };
+          
+          setMessages(prev => [...prev, immediateMessage]);
+          setIsLoading(false);
+          return;
+        }
+      }
+    }
     
-    // Set up a timeout to prevent infinite loading (30 seconds)
+    // If no immediate response, keep loading state and wait for events
+    console.log('🔄 No immediate response, keeping loading state true...');
+    
+    // Set up a timeout to prevent infinite loading (reduced to 15 seconds for testing)
     setTimeout(() => {
       console.log('⏰ Response timeout reached, setting loading to false');
       setIsLoading(false);
-      setError('Response timeout - no response received');
-    }, 30000);
+      setError('Response timeout - no response received. The message was sent but no reply was received.');
+    }, 15000);
     
   } catch (err: any) {
     console.error('❌ Failed to send text message:', err);
