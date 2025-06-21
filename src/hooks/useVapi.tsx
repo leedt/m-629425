@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 
 export type CallState = 'idle' | 'connecting' | 'connected' | 'ending' | 'error';
@@ -72,27 +71,9 @@ export const useVapi = () => {
       setCallState('connecting');
       setError(null);
       
-      console.log('Attempting to start call without parameters...');
-      
-      // First attempt: Call start without parameters (assistant configured in instance)
-      try {
-        await window.vapiInstance.start();
-        console.log('Call started successfully without parameters');
-      } catch (firstError: any) {
-        console.warn('First attempt failed:', firstError.message);
-        
-        // Fallback: Try with explicit assistant ID
-        console.log('Attempting fallback with explicit assistant ID...');
-        try {
-          await window.vapiInstance.start({
-            assistant: "64e64beb-2258-4f1a-8f29-2fa8eada149f"
-          });
-          console.log('Call started successfully with explicit assistant ID');
-        } catch (secondError: any) {
-          console.error('Both attempts failed. First error:', firstError.message, 'Second error:', secondError.message);
-          throw secondError;
-        }
-      }
+      console.log('Attempting to start call...');
+      await window.vapiInstance.start();
+      console.log('Call started successfully');
       
     } catch (err: any) {
       console.error('Failed to start call:', err);
