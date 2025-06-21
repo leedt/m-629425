@@ -58,10 +58,8 @@ export const useVapi = () => {
       setCallState('connecting');
       setError(null);
       
-      // Pass the assistant ID directly to the start method
-      await window.vapiInstance.start({
-        assistant: "64e64beb-2258-4f1a-8f29-2fa8eada149f"
-      });
+      // Call start without parameters - assistant ID is already configured in the instance
+      await window.vapiInstance.start();
     } catch (err: any) {
       console.error('Failed to start call:', err);
       setError(err.message || 'Failed to start call');
