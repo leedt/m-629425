@@ -13,6 +13,19 @@ export const useVapi = () => {
       if (window.vapiInstance) {
         console.log('Vapi instance found:', window.vapiInstance);
         
+        // Hide any Vapi buttons that might appear
+        const hideVapiButtons = () => {
+          const vapiButtons = document.querySelectorAll('[class*="vapi"], [id*="vapi"]');
+          vapiButtons.forEach(button => {
+            (button as HTMLElement).style.display = 'none';
+          });
+        };
+        
+        // Hide buttons immediately and set up observer for future buttons
+        hideVapiButtons();
+        const observer = new MutationObserver(hideVapiButtons);
+        observer.observe(document.body, { childList: true, subtree: true });
+        
         // Set up event listeners
         window.vapiInstance.on('call-start', () => {
           console.log('Call started');
@@ -64,8 +77,15 @@ export const useVapi = () => {
       setError(null);
       
       console.log('Attempting to start call...');
-      // The assistant is already configured during vapiSDK.run(), so no parameters needed
-      await window.vapiInstance.start();
+      // Try with assistant parameter first, then fallback to no parameters
+      try {
+        await window.vapiInstance.start({
+          assistant: "64e64beb-2258-4f1a-8f29-2fa8eada149f"
+        });
+      } catch (paramError) {
+        console.log('Failed with parameters, trying without:', paramError);
+        await window.vapiInstance.start();
+      }
       console.log('Call started successfully');
       
     } catch (err: any) {
