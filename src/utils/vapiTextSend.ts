@@ -82,7 +82,6 @@ export const sendVapiTextMessage = async (
     }
     
   } catch (err: any) {
-    const endTime = Date.now();
     console.error('❌ Failed to send text message:', err);
     console.error('❌ Error type:', typeof err);
     console.error('❌ Error message:', err.message);

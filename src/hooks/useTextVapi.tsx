@@ -1,11 +1,10 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { TextMessage } from '@/types/textMessage';
 import { initializeVapiText } from '@/utils/vapiTextInit';
 import { setupVapiTextEvents } from '@/utils/vapiTextEvents';
 import { sendVapiTextMessage } from '@/utils/vapiTextSend';
 
-export { TextMessage } from '@/types/textMessage';
+export type { TextMessage } from '@/types/textMessage';
 
 export const useTextVapi = () => {
   const [messages, setMessages] = useState<TextMessage[]>([
