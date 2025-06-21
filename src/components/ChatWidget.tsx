@@ -5,40 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { useVapiText } from "@/hooks/useVapiText";
 
 export default function ChatWidget() {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([{
-    id: 1,
-    sender: "Morgan",
-    text: "Hello! I'm Morgan, your ACME Realty virtual agent. What's your name?",
-    timestamp: new Date(),
-    isConsultant: true
-  }]);
+  const { messages, isLoading, error, sendMessage } = useVapiText();
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      const newMessage = {
-        id: messages.length + 1,
-        sender: "You",
-        text: message,
-        timestamp: new Date(),
-        isConsultant: false
-      };
-      setMessages([...messages, newMessage]);
+      sendMessage(message);
       setMessage("");
-
-      // Simulate consultant response
-      setTimeout(() => {
-        const response = {
-          id: messages.length + 2,
-          sender: "Morgan",
-          text: "Thank you! I'd be happy to help you find the perfect luxury villa. What type of property are you looking for?",
-          timestamp: new Date(),
-          isConsultant: true
-        };
-        setMessages(prev => [...prev, response]);
-      }, 1500);
     }
   };
 
@@ -76,12 +52,30 @@ export default function ChatWidget() {
         {/* Messages */}
         <div className="h-80 overflow-y-auto p-4 space-y-4">
           {messages.map(msg => (
-            <div key={msg.id} className={cn("flex", msg.isConsultant ? "justify-start" : "justify-end")}>
-              <div className={cn("max-w-xs rounded-2xl px-4 py-2 text-sm", msg.isConsultant ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100" : "bg-primary text-white")}>
+            <div key={msg.id} className={cn("flex", msg.sender === 'assistant' ? "justify-start" : "justify-end")}>
+              <div className={cn("max-w-xs rounded-2xl px-4 py-2 text-sm", msg.sender === 'assistant' ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100" : "bg-primary text-white")}>
                 {msg.text}
               </div>
             </div>
           ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="max-w-xs rounded-2xl px-4 py-2 text-sm bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                <div className="flex space-x-1">
+                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                </div>
+              </div>
+            </div>
+          )}
+          {error && (
+            <div className="flex justify-center">
+              <div className="text-xs text-red-500 bg-red-50 dark:bg-red-900/20 px-3 py-1 rounded-full">
+                {error}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Input */}
@@ -92,9 +86,14 @@ export default function ChatWidget() {
               onChange={e => setMessage(e.target.value)} 
               onKeyPress={handleKeyPress} 
               placeholder="Type your response..." 
-              className="flex-1" 
+              className="flex-1"
+              disabled={isLoading}
             />
-            <Button onClick={handleSendMessage} className="bg-primary hover:bg-primary/90">
+            <Button 
+              onClick={handleSendMessage} 
+              className="bg-primary hover:bg-primary/90"
+              disabled={isLoading || !message.trim()}
+            >
               <Send className="h-4 w-4" />
             </Button>
           </div>
