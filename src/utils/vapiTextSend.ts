@@ -69,17 +69,14 @@ export const sendVapiTextMessage = async (
     });
     
     const startTime = Date.now();
-    const result = await window.vapiTextInstance.send(text.trim());
+    await window.vapiTextInstance.send(text.trim());
     const endTime = Date.now();
     
     console.log('✅ Message sent successfully in', endTime - startTime, 'ms');
-    console.log('✅ Send result:', result);
-    console.log('✅ Send result type:', typeof result);
     
-    if (result && typeof result === 'object') {
-      console.log('✅ Send result keys:', Object.keys(result));
-      console.log('✅ Send result structure:', JSON.stringify(result, null, 2));
-    }
+    // Set loading to false after successful send - the response will come via events
+    setIsLoading(false);
+    console.log('🔄 Set loading to false after successful send');
     
   } catch (err: any) {
     console.error('❌ Failed to send text message:', err);
