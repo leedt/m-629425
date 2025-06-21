@@ -1,3 +1,4 @@
+
 import { TextMessage } from '@/types/textMessage';
 
 export const sendVapiTextMessage = async (
@@ -77,8 +78,8 @@ export const sendVapiTextMessage = async (
     console.log('✅ Send result:', result);
     console.log('✅ Send result type:', typeof result);
     
-    // Check if the result contains immediate response data
-    if (result && typeof result === 'object') {
+    // Check if the result contains immediate response data (only if result is not undefined/null)
+    if (result !== undefined && result !== null && typeof result === 'object') {
       console.log('🔍 Send result structure:', JSON.stringify(result, null, 2));
       
       // Check for immediate response in the result
