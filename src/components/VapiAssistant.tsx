@@ -25,12 +25,12 @@ export default function VapiAssistant() {
         script.async = true;
 
         script.onload = () => {
-          console.log('Vapi script loaded');
+          console.log('🎙️ Vapi script loaded for VOICE');
           resolve(window.vapiSDK);
         };
 
         script.onerror = () => {
-          console.error('Failed to load Vapi script');
+          console.error('❌ Failed to load Vapi script for VOICE');
           reject(new Error('Failed to load Vapi script'));
         };
 
@@ -43,8 +43,8 @@ export default function VapiAssistant() {
         await loadVapiScript();
         
         if (window.vapiSDK) {
-          console.log('Initializing Vapi with config:', {
-            apiKey: apiKey,
+          console.log('🎙️ Initializing Vapi for VOICE with config:', {
+            apiKey: apiKey ? '***' + apiKey.slice(-4) : 'missing',
             assistant: assistantId,
             config: {
               show: false,
@@ -52,7 +52,7 @@ export default function VapiAssistant() {
             }
           });
 
-          const instance = window.vapiSDK.run({
+          const voiceInstance = window.vapiSDK.run({
             apiKey: apiKey,
             assistant: assistantId, // Pass as string directly, not as object
             config: {
@@ -61,31 +61,30 @@ export default function VapiAssistant() {
             },
           });
 
-          // Set up event listeners
-          instance.on('call-start', () => {
-            console.log('Call started');
+          // Set up event listeners for VOICE only
+          voiceInstance.on('call-start', () => {
+            console.log('🎙️ VOICE Call started');
             setCallState('connected');
           });
 
-          instance.on('call-end', () => {
-            console.log('Call ended');
+          voiceInstance.on('call-end', () => {
+            console.log('🎙️ VOICE Call ended');
             setCallState('idle');
           });
 
-          instance.on('error', (error: any) => {
-            console.error('Vapi error:', error);
+          voiceInstance.on('error', (error: any) => {
+            console.error('🎙️ VOICE Vapi error:', error);
             setCallState('idle');
           });
 
-          setVapiInstance(instance);
-          window.vapiInstance = instance;
-          // Store assistant ID globally for useVapi hook
+          setVapiInstance(voiceInstance);
+          // Store VOICE instance in a different global variable
+          window.vapiVoiceInstance = voiceInstance;
           window.vapiAssistantId = assistantId;
-          console.log('Vapi initialized successfully');
+          console.log('✅ VOICE Vapi initialized successfully and stored in window.vapiVoiceInstance');
         }
       } catch (error) {
-        console.error('Failed to initialize Vapi:', error);
-        console.error('Error details:', error);
+        console.error('❌ Failed to initialize VOICE Vapi:', error);
       } finally {
         setIsLoading(false);
       }
@@ -96,16 +95,17 @@ export default function VapiAssistant() {
 
   const startCall = useCallback(async () => {
     if (!vapiInstance) {
-      console.log("Vapi is not initialized yet.");
+      console.log("🎙️ VOICE Vapi is not initialized yet.");
       return;
     }
 
     try {
       setCallState('connecting');
+      console.log('🎙️ Starting VOICE call...');
       await vapiInstance.start();
-      console.log('Call started successfully');
+      console.log('✅ VOICE Call started successfully');
     } catch (error) {
-      console.error('Failed to start call:', error);
+      console.error('❌ Failed to start VOICE call:', error);
       setCallState('idle');
     }
   }, [vapiInstance]);
@@ -115,9 +115,11 @@ export default function VapiAssistant() {
 
     try {
       setCallState('ending');
+      console.log('🎙️ Ending VOICE call...');
       await vapiInstance.stop();
+      console.log('✅ VOICE Call ended successfully');
     } catch (error) {
-      console.error('Failed to end call:', error);
+      console.error('❌ Failed to end VOICE call:', error);
       setCallState('idle');
     }
   }, [vapiInstance]);

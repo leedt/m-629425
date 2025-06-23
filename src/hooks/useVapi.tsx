@@ -10,8 +10,9 @@ export const useVapi = () => {
 
   useEffect(() => {
     const checkVapiReady = () => {
-      if (window.vapiInstance) {
-        console.log('Vapi instance found:', window.vapiInstance);
+      // Use the VOICE instance specifically
+      if (window.vapiVoiceInstance) {
+        console.log('🎙️ VOICE Vapi instance found:', window.vapiVoiceInstance);
         
         // Hide any Vapi buttons that might appear
         const hideVapiButtons = () => {
@@ -26,36 +27,36 @@ export const useVapi = () => {
         const observer = new MutationObserver(hideVapiButtons);
         observer.observe(document.body, { childList: true, subtree: true });
         
-        // Set up event listeners
-        window.vapiInstance.on('call-start', () => {
-          console.log('Call started');
+        // Set up event listeners for VOICE only
+        window.vapiVoiceInstance.on('call-start', () => {
+          console.log('🎙️ VOICE Call started');
           setCallState('connected');
           setError(null);
         });
 
-        window.vapiInstance.on('call-end', () => {
-          console.log('Call ended');
+        window.vapiVoiceInstance.on('call-end', () => {
+          console.log('🎙️ VOICE Call ended');
           setCallState('idle');
           setIsAgentSpeaking(false);
         });
 
-        window.vapiInstance.on('speech-start', () => {
-          console.log('Agent speaking');
+        window.vapiVoiceInstance.on('speech-start', () => {
+          console.log('🎙️ VOICE Agent speaking');
           setIsAgentSpeaking(true);
         });
 
-        window.vapiInstance.on('speech-end', () => {
-          console.log('Agent stopped speaking');
+        window.vapiVoiceInstance.on('speech-end', () => {
+          console.log('🎙️ VOICE Agent stopped speaking');
           setIsAgentSpeaking(false);
         });
 
-        window.vapiInstance.on('error', (error: any) => {
-          console.error('Vapi error:', error);
+        window.vapiVoiceInstance.on('error', (error: any) => {
+          console.error('🎙️ VOICE Vapi error:', error);
           setError(error.message || 'Call failed');
           setCallState('error');
         });
       } else {
-        console.log('Vapi instance not ready yet, checking again...');
+        console.log('🎙️ VOICE Vapi instance not ready yet, checking again...');
         setTimeout(checkVapiReady, 100);
       }
     };
@@ -64,11 +65,11 @@ export const useVapi = () => {
   }, []);
 
   const startCall = useCallback(async () => {
-    console.log('Starting call...');
+    console.log('🎙️ Starting VOICE call...');
     
-    if (!window.vapiInstance) {
-      console.error('Vapi instance not found');
-      setError('Vapi not initialized');
+    if (!window.vapiVoiceInstance) {
+      console.error('🎙️ VOICE Vapi instance not found');
+      setError('Voice Vapi not initialized');
       return;
     }
 
@@ -76,35 +77,37 @@ export const useVapi = () => {
       setCallState('connecting');
       setError(null);
       
-      console.log('Attempting to start call...');
+      console.log('🎙️ Attempting to start VOICE call...');
       
       // Try passing the assistant ID when starting the call
       const assistantId = window.vapiAssistantId;
       if (assistantId) {
-        console.log('Starting call with assistant ID:', assistantId);
-        await window.vapiInstance.start(assistantId);
+        console.log('🎙️ Starting VOICE call with assistant ID:', assistantId);
+        await window.vapiVoiceInstance.start(assistantId);
       } else {
-        console.log('Starting call without explicit assistant ID (using config)');
-        await window.vapiInstance.start();
+        console.log('🎙️ Starting VOICE call without explicit assistant ID (using config)');
+        await window.vapiVoiceInstance.start();
       }
       
-      console.log('Call started successfully');
+      console.log('✅ VOICE Call started successfully');
       
     } catch (err: any) {
-      console.error('Failed to start call:', err);
+      console.error('❌ Failed to start VOICE call:', err);
       setError(err.message || 'Failed to start call');
       setCallState('error');
     }
   }, []);
 
   const endCall = useCallback(async () => {
-    if (!window.vapiInstance) return;
+    if (!window.vapiVoiceInstance) return;
 
     try {
       setCallState('ending');
-      await window.vapiInstance.stop();
+      console.log('🎙️ Ending VOICE call...');
+      await window.vapiVoiceInstance.stop();
+      console.log('✅ VOICE Call ended successfully');
     } catch (err: any) {
-      console.error('Failed to end call:', err);
+      console.error('❌ Failed to end VOICE call:', err);
       setError(err.message || 'Failed to end call');
       setCallState('error');
     }

@@ -6,7 +6,13 @@ export const initializeVapiText = async (assistantId: string, apiKey: string) =>
     try {
       const message = args.map(arg => {
         if (typeof arg === 'string') return arg;
-        if (typeof arg === 'object') return JSON.stringify(arg);
+        if (typeof arg === 'object' && arg !== null) {
+          try {
+            return JSON.stringify(arg);
+          } catch {
+            return String(arg);
+          }
+        }
         return String(arg);
       }).join(' ');
       
@@ -23,24 +29,24 @@ export const initializeVapiText = async (assistantId: string, apiKey: string) =>
     return new Promise((resolve, reject) => {
       // Check if script is already loaded
       if (window.vapiSDK) {
-        console.log('✅ Vapi SDK already loaded, reusing existing instance');
+        console.log('✅ Vapi SDK already loaded, reusing existing instance for TEXT');
         resolve(window.vapiSDK);
         return;
       }
 
-      console.log('📡 Loading Vapi SDK script...');
+      console.log('📡 Loading Vapi SDK script for TEXT...');
       const script = document.createElement('script');
       script.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
       script.defer = true;
       script.async = true;
 
       script.onload = () => {
-        console.log('✅ Vapi SDK loaded successfully for text chat');
+        console.log('✅ Vapi SDK loaded successfully for TEXT chat');
         resolve(window.vapiSDK);
       };
 
       script.onerror = () => {
-        console.error('❌ Failed to load Vapi SDK for text chat');
+        console.error('❌ Failed to load Vapi SDK for TEXT chat');
         reject(new Error('Failed to load Vapi SDK'));
       };
 
@@ -48,11 +54,11 @@ export const initializeVapiText = async (assistantId: string, apiKey: string) =>
     });
   };
 
-  console.log('🚀 Starting text Vapi initialization...');
+  console.log('🚀 Starting TEXT Vapi initialization...');
   await loadVapiScript();
   
   if (window.vapiSDK) {
-    console.log('🔧 Initializing Vapi for text chat with config:', {
+    console.log('🔧 Initializing Vapi for TEXT chat with config:', {
       apiKey: apiKey ? '***' + apiKey.slice(-4) : 'missing',
       assistant: { id: assistantId },
       config: {
@@ -71,31 +77,31 @@ export const initializeVapiText = async (assistantId: string, apiKey: string) =>
     });
 
     // Log instance details safely
-    console.log('📋 Text instance created');
-    console.log('🔍 Instance type:', typeof textInstance);
+    console.log('📋 TEXT instance created');
+    console.log('🔍 TEXT Instance type:', typeof textInstance);
     
     try {
-      console.log('🔍 Available methods on instance:', Object.getOwnPropertyNames(textInstance));
-      console.log('🔍 Instance prototype methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(textInstance)));
+      console.log('🔍 Available methods on TEXT instance:', Object.getOwnPropertyNames(textInstance));
+      console.log('🔍 TEXT Instance prototype methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(textInstance)));
     } catch (e) {
-      console.log('⚠️ Could not inspect instance methods');
+      console.log('⚠️ Could not inspect TEXT instance methods');
     }
 
-    // Enhanced instance verification
-    console.log('🔧 Instance verification:');
+    // Enhanced instance verification for TEXT
+    console.log('🔧 TEXT Instance verification:');
     console.log('🔧 - Has .on method:', typeof textInstance.on === 'function');
     console.log('🔧 - Has .send method:', typeof textInstance.send === 'function');
 
-    // Store in a different global variable to avoid conflicts with voice instance
+    // Store in the TEXT-specific global variable
     window.vapiTextInstance = textInstance;
-    console.log('✅ Text Vapi initialized successfully and stored in window.vapiTextInstance');
+    console.log('✅ TEXT Vapi initialized successfully and stored in window.vapiTextInstance');
     
-    // Simplified health check
+    // Simplified health check for TEXT
     const healthCheck = () => {
-      console.log('💓 Health check - vapiTextInstance exists:', !!window.vapiTextInstance);
+      console.log('💓 TEXT Health check - vapiTextInstance exists:', !!window.vapiTextInstance);
       if (window.vapiTextInstance) {
-        console.log('💓 Health check - has send method:', typeof window.vapiTextInstance.send === 'function');
-        console.log('💓 Health check - has on method:', typeof window.vapiTextInstance.on === 'function');
+        console.log('💓 TEXT Health check - has send method:', typeof window.vapiTextInstance.send === 'function');
+        console.log('💓 TEXT Health check - has on method:', typeof window.vapiTextInstance.on === 'function');
       }
     };
     
@@ -107,7 +113,7 @@ export const initializeVapiText = async (assistantId: string, apiKey: string) =>
 
     return textInstance;
   } else {
-    console.error('❌ window.vapiSDK is not available after loading');
-    throw new Error('Failed to initialize Vapi SDK');
+    console.error('❌ window.vapiSDK is not available after loading for TEXT');
+    throw new Error('Failed to initialize Vapi SDK for TEXT');
   }
 };
