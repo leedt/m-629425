@@ -25,95 +25,99 @@ export const initializeVapiText = async (assistantId: string, apiKey: string) =>
     }
   };
 
-  const loadVapiScript = () => {
-    return new Promise((resolve, reject) => {
-      // Check if script is already loaded
-      if (window.vapiSDK) {
-        console.log('✅ Vapi SDK already loaded, reusing existing instance for TEXT');
-        resolve(window.vapiSDK);
-        return;
+  console.log('🚀 Starting TEXT Vapi initialization using REST API...');
+  
+  // For text interactions, we don't need to load a script
+  // We'll use the Vapi REST API directly
+  const textInstance = {
+    apiKey: apiKey,
+    assistantId: assistantId,
+    baseUrl: 'https://api.vapi.ai',
+    
+    // Method to send text messages via REST API
+    send: async (message: string) => {
+      console.log('📡 Sending text message via Vapi REST API:', message);
+      
+      try {
+        const response = await fetch(`${textInstance.baseUrl}/call`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            assistant: assistantId,
+            customer: {
+              number: 'text-chat-user',
+            },
+            type: 'inbound',
+            assistantOverrides: {
+              model: {
+                messages: [
+                  {
+                    role: 'user',
+                    content: message
+                  }
+                ]
+              }
+            }
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ Text API response:', data);
+        return data;
+      } catch (error) {
+        console.error('❌ Text API error:', error);
+        throw error;
       }
+    },
 
-      console.log('📡 Loading Vapi SDK script for TEXT...');
-      const script = document.createElement('script');
-      script.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-      script.defer = true;
-      script.async = true;
+    // Event emitter-like interface for compatibility
+    eventHandlers: new Map(),
+    
+    on: function(event: string, handler: Function) {
+      if (!this.eventHandlers.has(event)) {
+        this.eventHandlers.set(event, []);
+      }
+      this.eventHandlers.get(event).push(handler);
+      console.log(`✅ Event listener registered for: ${event}`);
+    },
 
-      script.onload = () => {
-        console.log('✅ Vapi SDK loaded successfully for TEXT chat');
-        resolve(window.vapiSDK);
-      };
-
-      script.onerror = () => {
-        console.error('❌ Failed to load Vapi SDK for TEXT chat');
-        reject(new Error('Failed to load Vapi SDK'));
-      };
-
-      document.head.appendChild(script);
-    });
+    emit: function(event: string, data: any) {
+      const handlers = this.eventHandlers.get(event) || [];
+      handlers.forEach((handler: Function) => {
+        try {
+          handler(data);
+        } catch (error) {
+          console.error(`❌ Error in event handler for ${event}:`, error);
+        }
+      });
+    }
   };
 
-  console.log('🚀 Starting TEXT Vapi initialization...');
-  await loadVapiScript();
+  // Store in the TEXT-specific global variable
+  window.vapiTextInstance = textInstance;
+  console.log('✅ TEXT Vapi initialized successfully using REST API');
   
-  if (window.vapiSDK) {
-    console.log('🔧 Initializing Vapi for TEXT chat with config:', {
-      apiKey: apiKey ? '***' + apiKey.slice(-4) : 'missing',
-      assistant: { id: assistantId },
-      config: {
-        show: false,
-        type: "text",
-      }
-    });
-
-    const textInstance = window.vapiSDK.run({
-      apiKey: apiKey,
-      assistant: { id: assistantId },
-      config: {
-        show: false,
-        type: "text",
-      },
-    });
-
-    // Log instance details safely
-    console.log('📋 TEXT instance created');
-    console.log('🔍 TEXT Instance type:', typeof textInstance);
-    
-    try {
-      console.log('🔍 Available methods on TEXT instance:', Object.getOwnPropertyNames(textInstance));
-      console.log('🔍 TEXT Instance prototype methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(textInstance)));
-    } catch (e) {
-      console.log('⚠️ Could not inspect TEXT instance methods');
+  // Simplified health check for TEXT
+  const healthCheck = () => {
+    console.log('💓 TEXT Health check - vapiTextInstance exists:', !!window.vapiTextInstance);
+    if (window.vapiTextInstance) {
+      console.log('💓 TEXT Health check - has send method:', typeof window.vapiTextInstance.send === 'function');
+      console.log('💓 TEXT Health check - has on method:', typeof window.vapiTextInstance.on === 'function');
     }
+  };
+  
+  // Initial health check
+  healthCheck();
+  
+  // Periodic health check every 30 seconds
+  setInterval(healthCheck, 30000);
 
-    // Enhanced instance verification for TEXT
-    console.log('🔧 TEXT Instance verification:');
-    console.log('🔧 - Has .on method:', typeof textInstance.on === 'function');
-    console.log('🔧 - Has .send method:', typeof textInstance.send === 'function');
-
-    // Store in the TEXT-specific global variable
-    window.vapiTextInstance = textInstance;
-    console.log('✅ TEXT Vapi initialized successfully and stored in window.vapiTextInstance');
-    
-    // Simplified health check for TEXT
-    const healthCheck = () => {
-      console.log('💓 TEXT Health check - vapiTextInstance exists:', !!window.vapiTextInstance);
-      if (window.vapiTextInstance) {
-        console.log('💓 TEXT Health check - has send method:', typeof window.vapiTextInstance.send === 'function');
-        console.log('💓 TEXT Health check - has on method:', typeof window.vapiTextInstance.on === 'function');
-      }
-    };
-    
-    // Initial health check
-    healthCheck();
-    
-    // Periodic health check every 30 seconds
-    setInterval(healthCheck, 30000);
-
-    return textInstance;
-  } else {
-    console.error('❌ window.vapiSDK is not available after loading for TEXT');
-    throw new Error('Failed to initialize Vapi SDK for TEXT');
-  }
+  return textInstance;
 };

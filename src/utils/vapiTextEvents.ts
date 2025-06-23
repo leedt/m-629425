@@ -7,101 +7,18 @@ export const setupVapiTextEvents = (
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setError: React.Dispatch<React.SetStateAction<string | null>>
 ) => {
-  console.log('🎧 Setting up Vapi text event listeners...');
+  console.log('🎧 Setting up Vapi text event listeners for REST API...');
   
-  // Check if it's an EventEmitter-like object
-  console.log('🔍 EventEmitter-like methods:');
-  console.log('🔍 - on:', typeof textInstance.on);
-  console.log('🔍 - emit:', typeof textInstance.emit);
-
-  // Try to intercept ALL possible events
+  // Since we're using REST API instead of WebSocket, we don't have real-time events
+  // We'll set up the event handlers for compatibility but they won't be used in the same way
+  
   if (typeof textInstance.on === 'function') {
-    console.log('🎯 Setting up event listeners...');
+    console.log('🎯 Setting up event listeners for REST API compatibility...');
     
-    // Focus on the most likely event names that Vapi actually uses
-    const priorityEvents = [
-      'message', 'response', 'text', 'chat', 'reply', 'answer',
-      'assistant-message', 'text-message', 'conversation-update',
-      'transcript', 'model-output', 'stream', 'data'
-    ];
-
-    // Set up listeners for priority events
-    priorityEvents.forEach(eventName => {
-      try {
-        textInstance.on(eventName, (...args: any[]) => {
-          console.log(`🎪 ${eventName.toUpperCase()} EVENT RECEIVED:`, args);
-          
-          if (args.length > 0) {
-            const data = args[0];
-            console.log(`🎪 ${eventName.toUpperCase()} data:`, data);
-            
-            // Try to extract message content from any event
-            const possibleMessageFields = [
-              'message', 'text', 'content', 'response', 'transcript', 
-              'reply', 'answer', 'completion', 'output', 'result'
-            ];
-            
-            let messageText = null;
-            
-            // Check direct fields
-            for (const field of possibleMessageFields) {
-              if (data && typeof data[field] === 'string' && data[field].trim()) {
-                messageText = data[field].trim();
-                console.log(`✅ Found message text in ${field}:`, messageText);
-                break;
-              }
-            }
-            
-            // Check nested objects if no direct message found
-            if (!messageText && data && typeof data === 'object') {
-              for (const key of Object.keys(data)) {
-                const value = data[key];
-                if (value && typeof value === 'object') {
-                  for (const field of possibleMessageFields) {
-                    if (typeof value[field] === 'string' && value[field].trim()) {
-                      messageText = value[field].trim();
-                      console.log(`✅ Found nested message text in ${key}.${field}:`, messageText);
-                      break;
-                    }
-                  }
-                }
-                if (messageText) break;
-              }
-            }
-            
-            // If we found a message, add it to the chat
-            if (messageText) {
-              console.log(`🎉 Processing assistant message from ${eventName}:`, messageText);
-              const newMessage: TextMessage = {
-                id: Date.now().toString(),
-                text: messageText,
-                sender: 'assistant',
-                timestamp: new Date()
-              };
-              
-              setMessages(prev => {
-                console.log(`📝 Adding message from ${eventName}. Previous count:`, prev.length);
-                const updated = [...prev, newMessage];
-                console.log('📝 Updated count:', updated.length);
-                return updated;
-              });
-              
-              setIsLoading(false);
-              setError(null);
-              console.log(`🔄 Set loading to false from ${eventName} event`);
-            }
-          }
-        });
-        console.log(`✅ Successfully set up listener for: ${eventName}`);
-      } catch (e) {
-        console.log(`⚠️ Failed to set up listener for: ${eventName}`, e);
-      }
-    });
-
     // Set up error event listener
     try {
       textInstance.on('error', (error: any) => {
-        console.error('🚨 Vapi error event:', error);
+        console.error('🚨 Vapi text error event:', error);
         setError(error.message || 'An error occurred');
         setIsLoading(false);
       });
@@ -109,7 +26,30 @@ export const setupVapiTextEvents = (
     } catch (e) {
       console.log('⚠️ Failed to set up error listener:', e);
     }
+
+    // Set up response event listener (for future webhook integration)
+    try {
+      textInstance.on('response', (response: any) => {
+        console.log('🎪 Response event received:', response);
+        
+        if (response && response.message) {
+          const newMessage: TextMessage = {
+            id: Date.now().toString(),
+            text: response.message,
+            sender: 'assistant',
+            timestamp: new Date()
+          };
+          
+          setMessages(prev => [...prev, newMessage]);
+          setIsLoading(false);
+          setError(null);
+        }
+      });
+      console.log('✅ Response event listener set up');
+    } catch (e) {
+      console.log('⚠️ Failed to set up response listener:', e);
+    }
   }
 
-  console.log('🎧 Event listeners setup completed');
+  console.log('🎧 Event listeners setup completed for REST API mode');
 };
