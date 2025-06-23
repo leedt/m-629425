@@ -25,99 +25,97 @@ export const initializeVapiText = async (assistantId: string, apiKey: string) =>
     }
   };
 
-  console.log('🚀 Starting TEXT Vapi initialization using REST API...');
+  console.log('🚀 Starting TEXT Vapi initialization using Web SDK...');
   
-  // For text interactions, we don't need to load a script
-  // We'll use the Vapi REST API directly
-  const textInstance = {
-    apiKey: apiKey,
-    assistantId: assistantId,
-    baseUrl: 'https://api.vapi.ai',
+  // Load the Vapi Web SDK for text interactions
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js';
+    script.async = true;
     
-    // Method to send text messages via REST API
-    send: async (message: string) => {
-      console.log('📡 Sending text message via Vapi REST API:', message);
+    script.onload = () => {
+      console.log('📦 Vapi Web SDK loaded for text');
       
       try {
-        const response = await fetch(`${textInstance.baseUrl}/call`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
+        // Initialize Vapi for text-only mode
+        const textInstance = window.Vapi(apiKey, assistantId, {
+          transcriber: {
+            provider: 'deepgram',
+            model: 'nova-2',
+            language: 'en'
           },
-          body: JSON.stringify({
-            assistant: assistantId,
-            customer: {
-              number: 'text-chat-user',
-            },
-            type: 'inbound',
-            assistantOverrides: {
-              model: {
-                messages: [
-                  {
-                    role: 'user',
-                    content: message
-                  }
-                ]
+          voice: {
+            provider: 'playht',
+            voiceId: 'jennifer'
+          },
+          model: {
+            provider: 'openai',
+            model: 'gpt-3.5-turbo',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are Morgan, a helpful virtual real estate agent for ACME Realty. Keep responses concise and friendly.'
               }
-            }
-          }),
+            ]
+          },
+          // Configure for text-only interaction
+          firstMessage: 'Hello! How can I help you today?',
+          recordingEnabled: false,
+          silenceTimeoutSeconds: 30,
+          responseDelaySeconds: 1
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        // Add text-specific methods
+        textInstance.sendTextMessage = async (message) => {
+          console.log('📤 Sending text message:', message);
+          
+          // Use the assistant's chat functionality
+          return new Promise((resolve, reject) => {
+            // Set up one-time listeners for this message
+            const responseHandler = (response) => {
+              console.log('📥 Received text response:', response);
+              textInstance.off('message', responseHandler);
+              textInstance.off('error', errorHandler);
+              resolve(response);
+            };
+            
+            const errorHandler = (error) => {
+              console.error('❌ Text message error:', error);
+              textInstance.off('message', responseHandler);
+              textInstance.off('error', errorHandler);
+              reject(error);
+            };
+            
+            textInstance.on('message', responseHandler);
+            textInstance.on('error', errorHandler);
+            
+            // Send the message
+            textInstance.send({
+              type: 'add-message',
+              message: {
+                role: 'user',
+                content: message
+              }
+            });
+          });
+        };
 
-        const data = await response.json();
-        console.log('✅ Text API response:', data);
-        return data;
+        // Store in the TEXT-specific global variable
+        window.vapiTextInstance = textInstance;
+        console.log('✅ TEXT Vapi initialized successfully using Web SDK');
+        resolve(textInstance);
+        
       } catch (error) {
-        console.error('❌ Text API error:', error);
-        throw error;
+        console.error('❌ Failed to initialize Vapi text instance:', error);
+        reject(error);
       }
-    },
-
-    // Event emitter-like interface for compatibility
-    eventHandlers: new Map(),
+    };
     
-    on: function(event: string, handler: Function) {
-      if (!this.eventHandlers.has(event)) {
-        this.eventHandlers.set(event, []);
-      }
-      this.eventHandlers.get(event).push(handler);
-      console.log(`✅ Event listener registered for: ${event}`);
-    },
-
-    emit: function(event: string, data: any) {
-      const handlers = this.eventHandlers.get(event) || [];
-      handlers.forEach((handler: Function) => {
-        try {
-          handler(data);
-        } catch (error) {
-          console.error(`❌ Error in event handler for ${event}:`, error);
-        }
-      });
-    }
-  };
-
-  // Store in the TEXT-specific global variable
-  window.vapiTextInstance = textInstance;
-  console.log('✅ TEXT Vapi initialized successfully using REST API');
-  
-  // Simplified health check for TEXT
-  const healthCheck = () => {
-    console.log('💓 TEXT Health check - vapiTextInstance exists:', !!window.vapiTextInstance);
-    if (window.vapiTextInstance) {
-      console.log('💓 TEXT Health check - has send method:', typeof window.vapiTextInstance.send === 'function');
-      console.log('💓 TEXT Health check - has on method:', typeof window.vapiTextInstance.on === 'function');
-    }
-  };
-  
-  // Initial health check
-  healthCheck();
-  
-  // Periodic health check every 30 seconds
-  setInterval(healthCheck, 30000);
-
-  return textInstance;
+    script.onerror = () => {
+      console.error('❌ Failed to load Vapi Web SDK');
+      reject(new Error('Failed to load Vapi Web SDK'));
+    };
+    
+    document.head.appendChild(script);
+  });
 };

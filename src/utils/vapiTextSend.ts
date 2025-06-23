@@ -23,13 +23,13 @@ export const sendVapiTextMessage = async (
     return;
   }
 
-  // Check if send method exists
-  const hasSendMethod = typeof window.vapiTextInstance.send === 'function';
-  console.log('🔍 Send method available:', hasSendMethod);
+  // Check if sendTextMessage method exists
+  const hasSendMethod = typeof window.vapiTextInstance.sendTextMessage === 'function';
+  console.log('🔍 SendTextMessage method available:', hasSendMethod);
   
   if (!hasSendMethod) {
-    console.error('❌ Send method not available on instance');
-    setError('Send method not available');
+    console.error('❌ SendTextMessage method not available on instance');
+    setError('Text messaging method not available');
     return;
   }
 
@@ -54,29 +54,17 @@ export const sendVapiTextMessage = async (
   setError(null);
 
   try {
-    console.log('📡 Attempting to send message via Vapi REST API...');
+    console.log('📡 Attempting to send text message via Vapi Web SDK...');
     
     const startTime = Date.now();
-    const result = await window.vapiTextInstance.send(text.trim());
+    const result = await window.vapiTextInstance.sendTextMessage(text.trim());
     const endTime = Date.now();
     
-    console.log('✅ Message sent successfully in', endTime - startTime, 'ms');
-    console.log('✅ API result:', result);
+    console.log('✅ Text message sent successfully in', endTime - startTime, 'ms');
+    console.log('✅ Message result:', result);
     
-    // For now, simulate a response since we're using the call API
-    // In a real implementation, you'd need to poll for the call status or use webhooks
-    setTimeout(() => {
-      const assistantMessage: TextMessage = {
-        id: (Date.now() + 1).toString(),
-        text: "I received your message and I'm processing it. This is a simulated response using the Vapi REST API.",
-        sender: 'assistant',
-        timestamp: new Date()
-      };
-      
-      setMessages(prev => [...prev, assistantMessage]);
-      setIsLoading(false);
-      console.log('🔄 Set loading to false after simulated response');
-    }, 2000);
+    // The response should come through the event listeners
+    // The loading state will be set to false in the event handler
     
   } catch (err: any) {
     console.error('❌ Failed to send text message:', err);
