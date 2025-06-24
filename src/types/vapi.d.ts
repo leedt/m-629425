@@ -8,5 +8,6 @@ declare global {
     vapiVoiceInstance: any; // NEW: Specific for voice calls
     vapiTextInstance: any; // Specific for text chat
     vapiAssistantId: string;
+    Vapi: any; // Add Vapi constructor to Window interface
   }
 }
