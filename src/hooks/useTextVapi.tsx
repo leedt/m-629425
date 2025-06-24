@@ -25,51 +25,73 @@ export const useTextVapi = () => {
   const apiKey = "9bac5b6f-d901-4a44-9d24-9e0730757aa4";
 
   useEffect(() => {
-    const initializeTextVapi = async () => {
-      const checkVapiReady = () => {
-        if (typeof window !== 'undefined' && window.Vapi) {
-          console.log('✅ VAPI SDK found, creating text instance...');
-          
-          try {
-            const textInstance = new window.Vapi(apiKey);
-            window.vapiTextInstance = textInstance;
-            setVapiInstance(textInstance);
+    const initializeTextVapi = () => {
+      if (typeof window !== 'undefined' && window.Vapi) {
+        console.log('✅ VAPI SDK found, creating text instance...');
+        
+        try {
+          const textInstance = new window.Vapi(apiKey);
+          window.vapiTextInstance = textInstance;
+          setVapiInstance(textInstance);
 
-            // Set up message handler
-            textInstance.on('message', (message: any) => {
-              console.log('📨 Received message:', message);
+          // Listen for conversation-update events (correct for text messaging)
+          textInstance.on('message', (message: any) => {
+            console.log('📨 Received message:', message);
+            
+            // Handle conversation updates - this is the correct event for text
+            if (message.type === 'conversation-update' && message.conversation?.messages) {
+              const lastMessage = message.conversation.messages[message.conversation.messages.length - 1];
               
-              if (message.type === 'transcript' && message.transcript && message.transcript.type === 'final') {
-                const newMessage: TextMessage = {
-                  id: Date.now().toString(),
-                  text: message.transcript.text,
-                  sender: message.transcript.user === 'assistant' ? 'assistant' : 'user',
+              if (lastMessage && lastMessage.role === 'assistant' && lastMessage.content) {
+                const assistantMessage: TextMessage = {
+                  id: `assistant-${Date.now()}`,
+                  text: lastMessage.content,
+                  sender: 'assistant',
                   timestamp: new Date()
                 };
-                setMessages(prev => [...prev, newMessage]);
+                
+                setMessages(prev => {
+                  // Avoid duplicates
+                  const exists = prev.some(m => 
+                    m.text === assistantMessage.text && 
+                    m.sender === 'assistant' &&
+                    Math.abs(m.timestamp.getTime() - assistantMessage.timestamp.getTime()) < 1000
+                  );
+                  return exists ? prev : [...prev, assistantMessage];
+                });
               }
-            });
+            }
 
-            textInstance.on('error', (error: any) => {
-              console.error('❌ Text VAPI error:', error);
-              setError(error.message || 'Text messaging error');
-              setIsLoading(false);
-            });
+            // Handle model output for immediate responses
+            if (message.type === 'model-output' && message.output) {
+              const assistantMessage: TextMessage = {
+                id: `model-${Date.now()}`,
+                text: message.output,
+                sender: 'assistant',
+                timestamp: new Date()
+              };
+              
+              setMessages(prev => [...prev, assistantMessage]);
+            }
+          });
 
-            console.log('✅ Text VAPI initialized successfully');
-            setError(null);
+          textInstance.on('error', (error: any) => {
+            console.error('❌ Text VAPI error:', error);
+            setError(error.message || 'Text messaging error');
+            setIsLoading(false);
+          });
 
-          } catch (error: any) {
-            console.error('❌ Failed to initialize text VAPI:', error);
-            setError(`Failed to initialize: ${error.message}`);
-          }
-        } else {
-          console.log('🔄 VAPI SDK not ready yet, retrying...');
-          setTimeout(checkVapiReady, 100);
+          console.log('✅ Text VAPI initialized successfully');
+          setError(null);
+
+        } catch (error: any) {
+          console.error('❌ Failed to initialize text VAPI:', error);
+          setError(`Failed to initialize: ${error.message}`);
         }
-      };
-
-      checkVapiReady();
+      } else {
+        console.log('🔄 VAPI SDK not ready yet, retrying...');
+        setTimeout(initializeTextVapi, 100);
+      }
     };
 
     initializeTextVapi();
@@ -85,9 +107,9 @@ export const useTextVapi = () => {
       setIsLoading(true);
       setError(null);
 
-      // Add user message immediately
+      // Add user message to UI immediately
       const userMessage: TextMessage = {
-        id: Date.now().toString(),
+        id: `user-${Date.now()}`,
         text,
         sender: 'user',
         timestamp: new Date()
@@ -96,7 +118,7 @@ export const useTextVapi = () => {
 
       console.log('📤 Sending text message:', text);
       
-      // Send to VAPI using correct format
+      // Send message using the correct format for text messaging
       await vapiInstance.send({
         type: 'add-message',
         message: {
@@ -104,6 +126,8 @@ export const useTextVapi = () => {
           content: text
         }
       });
+
+      console.log('✅ Message sent successfully');
 
     } catch (error: any) {
       console.error('❌ Failed to send message:', error);
