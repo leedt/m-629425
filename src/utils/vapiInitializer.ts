@@ -8,11 +8,8 @@ export const initializeVapiInstance = (config: VapiConfig): Promise<any> => {
     
     const attemptInitialization = () => {
       console.log(`🔍 Checking for VAPI SDK (attempt ${retryCount + 1}/${maxRetries})...`);
-      console.log('Available window properties:', Object.keys(window).filter(key => key.toLowerCase().includes('vapi')));
       
       const VapiConstructor = window.Vapi || window.vapiSDK?.Vapi || (window as any).VapiSDK || window.vapiSDK;
-      
-      console.log('VapiConstructor found:', !!VapiConstructor, typeof VapiConstructor);
       
       if (VapiConstructor) {
         console.log('✅ VAPI constructor found, creating text instance...');
@@ -20,17 +17,18 @@ export const initializeVapiInstance = (config: VapiConfig): Promise<any> => {
         try {
           let textInstance;
           
+          // Create a text-only instance using the constructor
           if (typeof VapiConstructor === 'function') {
             textInstance = new VapiConstructor(config.apiKey);
           } else if (VapiConstructor.run) {
+            // Use run method with proper text configuration
             textInstance = VapiConstructor.run({
               apiKey: config.apiKey,
-              assistant: {
-                id: config.assistantId
-              },
+              assistant: config.assistantId,
               config: { 
-                mode: 'text',
-                show: false 
+                mode: 'text-only',
+                show: false,
+                position: 'bottom-right'
               }
             });
           } else {
@@ -63,18 +61,26 @@ export const initializeVapiInstance = (config: VapiConfig): Promise<any> => {
 };
 
 export const startVapiConversation = async (vapiInstance: any, assistantId: string) => {
-  if (vapiInstance.start) {
+  console.log('🚀 Starting text conversation...');
+  
+  // For text mode, we don't need to start a call, just set up the conversation
+  if (vapiInstance.startConversation) {
     try {
-      await vapiInstance.start(assistantId);
+      await vapiInstance.startConversation();
+      console.log('✅ Text conversation started');
     } catch (err: any) {
-      console.log('Could not auto-start conversation, trying alternative method:', err);
-      if (vapiInstance.startCall) {
-        try {
-          await vapiInstance.startCall({ assistant: assistantId });
-        } catch (err2: any) {
-          console.log('Alternative start method also failed:', err2);
-        }
-      }
+      console.log('Could not start conversation with startConversation:', err);
+    }
+  } else if (vapiInstance.send) {
+    // Send an initial message to start the conversation
+    try {
+      await vapiInstance.send({
+        type: 'conversation-start',
+        assistant: assistantId
+      });
+      console.log('✅ Text conversation initiated via send');
+    } catch (err: any) {
+      console.log('Could not start conversation via send:', err);
     }
   }
 };

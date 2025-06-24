@@ -26,9 +26,21 @@ export const useTextVapi = () => {
         const instance = await initializeVapiInstance({ assistantId, apiKey });
         setVapiInstance(instance);
 
-        // Set up event listeners
+        // Set up event listeners for text messages only
         instance.on('message', (message: any) => {
           handleVapiMessage(message, setMessages, setIsLoading);
+        });
+
+        instance.on('conversation-update', (message: any) => {
+          handleVapiMessage({ ...message, type: 'conversation-update' }, setMessages, setIsLoading);
+        });
+
+        instance.on('speech-update', (message: any) => {
+          handleVapiMessage({ ...message, type: 'speech-update' }, setMessages, setIsLoading);
+        });
+
+        instance.on('status-update', (message: any) => {
+          handleVapiMessage({ ...message, type: 'status-update' }, setMessages, setIsLoading);
         });
 
         instance.on('error', (error: any) => {
@@ -37,12 +49,7 @@ export const useTextVapi = () => {
           setIsLoading(false);
         });
 
-        instance.on('call-start', () => {
-          console.log('✅ Text conversation started');
-          setError(null);
-        });
-
-        // Start the conversation
+        // Start the text conversation
         await startVapiConversation(instance, assistantId);
 
       } catch (error: any) {
