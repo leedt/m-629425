@@ -26,7 +26,7 @@ export const useTextVapi = () => {
 
   useEffect(() => {
     let retryCount = 0;
-    const maxRetries = 30; // Reduce retries since we're checking more frequently
+    const maxRetries = 30;
     
     const initializeTextVapi = () => {
       console.log(`🔍 Checking for VAPI SDK (attempt ${retryCount + 1}/${maxRetries})...`);
@@ -41,17 +41,19 @@ export const useTextVapi = () => {
         console.log('✅ VAPI constructor found, creating text instance...');
         
         try {
-          // Try different initialization methods
           let textInstance;
           
           if (typeof VapiConstructor === 'function') {
             textInstance = new VapiConstructor(apiKey);
           } else if (VapiConstructor.run) {
-            // If it's the vapiSDK object with a run method
+            // Start a text conversation immediately
             textInstance = VapiConstructor.run({
               apiKey: apiKey,
               assistant: assistantId,
-              config: { mode: 'text' }
+              config: { 
+                mode: 'text',
+                show: false 
+              }
             });
           } else {
             throw new Error('Unknown VAPI constructor type');
@@ -87,16 +89,28 @@ export const useTextVapi = () => {
               }
             }
 
-            // Handle model output
-            if (message.type === 'model-output' && message.output) {
+            // Handle speech events for text mode
+            if (message.type === 'speech-start') {
+              console.log('🎤 Assistant is thinking...');
+              setIsLoading(true);
+            }
+
+            if (message.type === 'speech-end') {
+              console.log('🎤 Assistant finished');
+              setIsLoading(false);
+            }
+
+            // Handle transcript for real-time responses
+            if (message.type === 'transcript' && message.transcript?.transcript) {
               const assistantMessage: TextMessage = {
-                id: `model-${Date.now()}`,
-                text: message.output,
+                id: `transcript-${Date.now()}`,
+                text: message.transcript.transcript,
                 sender: 'assistant',
                 timestamp: new Date()
               };
               
               setMessages(prev => [...prev, assistantMessage]);
+              setIsLoading(false);
             }
           });
 
@@ -106,8 +120,20 @@ export const useTextVapi = () => {
             setIsLoading(false);
           });
 
+          // Start the conversation automatically
+          textInstance.on('call-start', () => {
+            console.log('✅ Text conversation started');
+            setError(null);
+          });
+
           console.log('✅ Text VAPI initialized successfully');
-          setError(null);
+          
+          // Try to start the conversation
+          if (textInstance.start) {
+            textInstance.start().catch((err: any) => {
+              console.log('Could not auto-start conversation:', err);
+            });
+          }
 
         } catch (error: any) {
           console.error('❌ Failed to initialize text VAPI:', error);
@@ -171,7 +197,6 @@ export const useTextVapi = () => {
     } catch (error: any) {
       console.error('❌ Failed to send message:', error);
       setError(`Failed to send: ${error.message}`);
-    } finally {
       setIsLoading(false);
     }
   }, [vapiInstance]);
