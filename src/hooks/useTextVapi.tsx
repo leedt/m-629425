@@ -26,26 +26,45 @@ export const useTextVapi = () => {
 
   useEffect(() => {
     let retryCount = 0;
-    const maxRetries = 50; // 5 seconds max
+    const maxRetries = 30; // Reduce retries since we're checking more frequently
     
     const initializeTextVapi = () => {
       console.log(`🔍 Checking for VAPI SDK (attempt ${retryCount + 1}/${maxRetries})...`);
-      console.log('window.Vapi:', typeof window.Vapi);
-      console.log('window object keys:', Object.keys(window).filter(key => key.toLowerCase().includes('vapi')));
+      console.log('Available window properties:', Object.keys(window).filter(key => key.toLowerCase().includes('vapi')));
       
-      if (typeof window !== 'undefined' && window.Vapi) {
-        console.log('✅ VAPI SDK found, creating text instance...');
+      // Check for different possible VAPI constructors
+      const VapiConstructor = window.Vapi || window.vapiSDK?.Vapi || (window as any).VapiSDK || window.vapiSDK;
+      
+      console.log('VapiConstructor found:', !!VapiConstructor, typeof VapiConstructor);
+      
+      if (VapiConstructor) {
+        console.log('✅ VAPI constructor found, creating text instance...');
         
         try {
-          const textInstance = new window.Vapi(apiKey);
+          // Try different initialization methods
+          let textInstance;
+          
+          if (typeof VapiConstructor === 'function') {
+            textInstance = new VapiConstructor(apiKey);
+          } else if (VapiConstructor.run) {
+            // If it's the vapiSDK object with a run method
+            textInstance = VapiConstructor.run({
+              apiKey: apiKey,
+              assistant: assistantId,
+              config: { mode: 'text' }
+            });
+          } else {
+            throw new Error('Unknown VAPI constructor type');
+          }
+          
           window.vapiTextInstance = textInstance;
           setVapiInstance(textInstance);
 
-          // Listen for conversation-update events (correct for text messaging)
+          // Set up event listeners
           textInstance.on('message', (message: any) => {
-            console.log('📨 Received message:', message);
+            console.log('📨 Received text message:', message);
             
-            // Handle conversation updates - this is the correct event for text
+            // Handle conversation updates
             if (message.type === 'conversation-update' && message.conversation?.messages) {
               const lastMessage = message.conversation.messages[message.conversation.messages.length - 1];
               
@@ -58,7 +77,6 @@ export const useTextVapi = () => {
                 };
                 
                 setMessages(prev => {
-                  // Avoid duplicates
                   const exists = prev.some(m => 
                     m.text === assistantMessage.text && 
                     m.sender === 'assistant' &&
@@ -69,7 +87,7 @@ export const useTextVapi = () => {
               }
             }
 
-            // Handle model output for immediate responses
+            // Handle model output
             if (message.type === 'model-output' && message.output) {
               const assistantMessage: TextMessage = {
                 id: `model-${Date.now()}`,
@@ -99,17 +117,17 @@ export const useTextVapi = () => {
         retryCount++;
         if (retryCount >= maxRetries) {
           console.error('❌ VAPI SDK failed to load after maximum retries');
-          setError('VAPI SDK failed to load. Please refresh the page.');
+          setError('Text messaging unavailable. The VAPI SDK could not be loaded.');
           return;
         }
         
-        console.log(`🔄 VAPI SDK not ready yet, retrying... (${retryCount}/${maxRetries})`);
-        setTimeout(initializeTextVapi, 100);
+        console.log(`🔄 VAPI constructor not ready yet, retrying... (${retryCount}/${maxRetries})`);
+        setTimeout(initializeTextVapi, 200);
       }
     };
 
-    // Start initialization after a small delay to ensure DOM is ready
-    setTimeout(initializeTextVapi, 500);
+    // Start initialization with a delay
+    setTimeout(initializeTextVapi, 1000);
   }, []);
 
   const sendMessage = useCallback(async (text: string) => {
@@ -133,14 +151,20 @@ export const useTextVapi = () => {
 
       console.log('📤 Sending text message:', text);
       
-      // Send message using the correct format for text messaging
-      await vapiInstance.send({
-        type: 'add-message',
-        message: {
-          role: 'user',
-          content: text
-        }
-      });
+      // Try different send methods
+      if (vapiInstance.send) {
+        await vapiInstance.send({
+          type: 'add-message',
+          message: {
+            role: 'user',
+            content: text
+          }
+        });
+      } else if (vapiInstance.sendMessage) {
+        await vapiInstance.sendMessage(text);
+      } else {
+        throw new Error('No send method available on VAPI instance');
+      }
 
       console.log('✅ Message sent successfully');
 
