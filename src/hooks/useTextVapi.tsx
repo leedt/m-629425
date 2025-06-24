@@ -25,7 +25,14 @@ export const useTextVapi = () => {
   const apiKey = "9bac5b6f-d901-4a44-9d24-9e0730757aa4";
 
   useEffect(() => {
+    let retryCount = 0;
+    const maxRetries = 50; // 5 seconds max
+    
     const initializeTextVapi = () => {
+      console.log(`🔍 Checking for VAPI SDK (attempt ${retryCount + 1}/${maxRetries})...`);
+      console.log('window.Vapi:', typeof window.Vapi);
+      console.log('window object keys:', Object.keys(window).filter(key => key.toLowerCase().includes('vapi')));
+      
       if (typeof window !== 'undefined' && window.Vapi) {
         console.log('✅ VAPI SDK found, creating text instance...');
         
@@ -89,12 +96,20 @@ export const useTextVapi = () => {
           setError(`Failed to initialize: ${error.message}`);
         }
       } else {
-        console.log('🔄 VAPI SDK not ready yet, retrying...');
+        retryCount++;
+        if (retryCount >= maxRetries) {
+          console.error('❌ VAPI SDK failed to load after maximum retries');
+          setError('VAPI SDK failed to load. Please refresh the page.');
+          return;
+        }
+        
+        console.log(`🔄 VAPI SDK not ready yet, retrying... (${retryCount}/${maxRetries})`);
         setTimeout(initializeTextVapi, 100);
       }
     };
 
-    initializeTextVapi();
+    // Start initialization after a small delay to ensure DOM is ready
+    setTimeout(initializeTextVapi, 500);
   }, []);
 
   const sendMessage = useCallback(async (text: string) => {
