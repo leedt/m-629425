@@ -46,10 +46,12 @@ export const useTextVapi = () => {
           if (typeof VapiConstructor === 'function') {
             textInstance = new VapiConstructor(apiKey);
           } else if (VapiConstructor.run) {
-            // Start a text conversation immediately
+            // Start a text conversation immediately with proper assistant config
             textInstance = VapiConstructor.run({
               apiKey: apiKey,
-              assistant: assistantId,
+              assistant: {
+                id: assistantId
+              },
               config: { 
                 mode: 'text',
                 show: false 
@@ -128,10 +130,16 @@ export const useTextVapi = () => {
 
           console.log('✅ Text VAPI initialized successfully');
           
-          // Try to start the conversation
+          // Try to start the conversation with proper assistant config
           if (textInstance.start) {
-            textInstance.start().catch((err: any) => {
-              console.log('Could not auto-start conversation:', err);
+            textInstance.start(assistantId).catch((err: any) => {
+              console.log('Could not auto-start conversation, trying alternative method:', err);
+              // Try alternative start method
+              if (textInstance.startCall) {
+                textInstance.startCall({ assistant: assistantId }).catch((err2: any) => {
+                  console.log('Alternative start method also failed:', err2);
+                });
+              }
             });
           }
 
