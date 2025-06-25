@@ -28,49 +28,49 @@ export const handleVapiMessage = (
   setMessages: React.Dispatch<React.SetStateAction<TextMessage[]>>,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  console.log('📨 Received text message:', message);
+  console.log('📨 Processing VAPI message:', JSON.stringify(message, null, 2));
   
-  // Handle conversation updates with assistant messages
+  // Handle different message types from VAPI
+  let assistantContent = null;
+
+  // Check for assistant message in various formats
   if (message.type === 'conversation-update' && message.conversation?.messages) {
     const lastMessage = message.conversation.messages[message.conversation.messages.length - 1];
-    
     if (lastMessage && lastMessage.role === 'assistant' && lastMessage.content) {
-      const assistantMessage = createAssistantMessage(lastMessage.content);
-      
-      setMessages(prev => {
-        const exists = isDuplicateMessage(prev, assistantMessage);
-        return exists ? prev : [...prev, assistantMessage];
-      });
-      setIsLoading(false);
+      assistantContent = lastMessage.content;
     }
-  }
-
-  // Handle direct assistant messages
-  if (message.type === 'message' && message.role === 'assistant' && message.content) {
-    const assistantMessage = createAssistantMessage(message.content);
-    setMessages(prev => {
-      const exists = isDuplicateMessage(prev, assistantMessage);
-      return exists ? prev : [...prev, assistantMessage];
-    });
-    setIsLoading(false);
-  }
-
-  // Handle transcript updates (real-time conversation)
-  if (message.type === 'transcript' && message.transcript?.messages) {
+  } else if (message.role === 'assistant' && message.content) {
+    assistantContent = message.content;
+  } else if (message.type === 'transcript' && message.transcript?.messages) {
     const messages = message.transcript.messages;
     const lastAssistantMessage = messages.filter((m: any) => m.role === 'assistant').pop();
-    
     if (lastAssistantMessage && lastAssistantMessage.content) {
-      const assistantMessage = createAssistantMessage(lastAssistantMessage.content);
-      setMessages(prev => {
-        const exists = isDuplicateMessage(prev, assistantMessage);
-        return exists ? prev : [...prev, assistantMessage];
-      });
-      setIsLoading(false);
+      assistantContent = lastAssistantMessage.content;
     }
+  } else if (message.message && typeof message.message === 'string') {
+    assistantContent = message.message;
+  } else if (typeof message === 'string') {
+    assistantContent = message;
   }
 
-  // Handle speech events for text mode (these indicate thinking/processing)
+  if (assistantContent) {
+    console.log('✅ Found assistant content:', assistantContent);
+    const assistantMessage = createAssistantMessage(assistantContent);
+    
+    setMessages(prev => {
+      const exists = isDuplicateMessage(prev, assistantMessage);
+      if (exists) {
+        console.log('🔄 Duplicate message detected, skipping');
+        return prev;
+      }
+      console.log('➕ Adding new assistant message');
+      return [...prev, assistantMessage];
+    });
+    setIsLoading(false);
+    return;
+  }
+
+  // Handle loading states
   if (message.type === 'speech-update') {
     if (message.status === 'started') {
       console.log('🤖 Assistant is thinking...');
@@ -81,32 +81,29 @@ export const handleVapiMessage = (
     }
   }
 
-  // Handle function call responses
-  if (message.type === 'function-call' && message.result) {
-    console.log('🔧 Function call result:', message.result);
+  // Handle errors
+  if (message.type === 'error' || message.error) {
+    console.error('❌ VAPI error:', message);
     setIsLoading(false);
   }
 
   // Handle status updates
   if (message.type === 'status-update') {
+    console.log('📊 Status update:', message);
     if (message.status === 'ended') {
-      console.log('📞 Conversation ended:', message.endedReason);
       setIsLoading(false);
     }
-  }
-
-  // Handle errors
-  if (message.type === 'error' || message.action === 'error') {
-    console.error('❌ VAPI error in text mode:', message);
-    setIsLoading(false);
   }
 };
 
 export const sendVapiMessage = async (vapiInstance: any, text: string): Promise<void> => {
-  console.log('📤 Sending text message:', text);
+  console.log('📤 Attempting to send message:', text);
+  console.log('📤 VAPI instance methods:', Object.getOwnPropertyNames(vapiInstance));
   
   try {
+    // Try different methods to send the message
     if (vapiInstance.send) {
+      console.log('📤 Using .send() method');
       await vapiInstance.send({
         type: 'add-message',
         message: {
@@ -115,10 +112,14 @@ export const sendVapiMessage = async (vapiInstance: any, text: string): Promise<
         }
       });
     } else if (vapiInstance.sendMessage) {
+      console.log('📤 Using .sendMessage() method');
       await vapiInstance.sendMessage(text);
     } else if (vapiInstance.say) {
+      console.log('📤 Using .say() method');
       await vapiInstance.say(text);
     } else {
+      console.error('❌ No available send methods on VAPI instance');
+      console.log('Available methods:', Object.getOwnPropertyNames(vapiInstance).filter(prop => typeof vapiInstance[prop] === 'function'));
       throw new Error('No send method available on VAPI instance');
     }
 

@@ -22,18 +22,6 @@ export const useVapi = () => {
         
         console.log('🎙️ VOICE: Setting up event listeners...');
 
-        // Hide any Vapi buttons that might appear
-        const hideVapiButtons = () => {
-          const vapiButtons = document.querySelectorAll('[class*="vapi"], [id*="vapi"]');
-          vapiButtons.forEach(button => {
-            (button as HTMLElement).style.display = 'none';
-          });
-        };
-        
-        hideVapiButtons();
-        const observer = new MutationObserver(hideVapiButtons);
-        observer.observe(document.body, { childList: true, subtree: true });
-        
         // Set up event listeners for VOICE only
         voiceInstance.on('call-start', () => {
           console.log('🎙️ VOICE: Call started');
@@ -59,7 +47,7 @@ export const useVapi = () => {
 
         voiceInstance.on('error', (error: any) => {
           console.error('🎙️ VOICE: Error occurred:', error);
-          if (error.error?.type === 'permissions') {
+          if (error.error?.type === 'permissions' || error.message?.includes('permission')) {
             setError('Microphone permission denied. Please allow microphone access and try again.');
             setCallState('error');
           } else {
@@ -71,12 +59,6 @@ export const useVapi = () => {
         setVapiInstance(voiceInstance);
         console.log('🎙️ VOICE: Instance ready and stored');
         
-        // Debug logging
-        console.log('🔍 VOICE DEBUG:');
-        console.log('Voice:', (window as any).vapiVoiceInstance);
-        console.log('Text:', (window as any).vapiTextInstance);
-        console.log('Same?', (window as any).vapiVoiceInstance === (window as any).vapiTextInstance);
-        
       } catch (error: any) {
         console.error('❌ VOICE: Failed to initialize:', error);
         setError('Failed to initialize voice assistant');
@@ -85,6 +67,30 @@ export const useVapi = () => {
     };
 
     initializeVapi();
+  }, []);
+
+  const requestMicrophonePermission = useCallback(async () => {
+    try {
+      console.log('🎙️ VOICE: Requesting microphone permission...');
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      console.log('✅ VOICE: Microphone permission granted');
+      
+      // Stop the stream immediately as we just needed permission
+      stream.getTracks().forEach(track => track.stop());
+      return true;
+    } catch (error: any) {
+      console.error('❌ VOICE: Microphone permission denied:', error);
+      
+      if (error.name === 'NotAllowedError') {
+        setError('Please allow microphone access in your browser settings and try again.');
+      } else if (error.name === 'NotFoundError') {
+        setError('No microphone found. Please connect a microphone and try again.');
+      } else {
+        setError(`Microphone error: ${error.message}`);
+      }
+      
+      return false;
+    }
   }, []);
 
   const startCall = useCallback(async () => {
@@ -101,10 +107,9 @@ export const useVapi = () => {
       setError(null);
       
       // Request microphone permission first
-      const hasPermission = await VapiManager.requestMicrophonePermission();
+      const hasPermission = await requestMicrophonePermission();
       
       if (!hasPermission) {
-        setError('Microphone permission is required for voice calls');
         setCallState('error');
         return;
       }
@@ -118,7 +123,7 @@ export const useVapi = () => {
       setError(err.message || 'Failed to start call');
       setCallState('error');
     }
-  }, [vapiInstance, assistantId]);
+  }, [vapiInstance, assistantId, requestMicrophonePermission]);
 
   const endCall = useCallback(async () => {
     if (!vapiInstance) return;
