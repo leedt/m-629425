@@ -48,8 +48,26 @@ export const handleVapiMessage = (
   // Handle direct assistant messages
   if (message.type === 'message' && message.role === 'assistant' && message.content) {
     const assistantMessage = createAssistantMessage(message.content);
-    setMessages(prev => [...prev, assistantMessage]);
+    setMessages(prev => {
+      const exists = isDuplicateMessage(prev, assistantMessage);
+      return exists ? prev : [...prev, assistantMessage];
+    });
     setIsLoading(false);
+  }
+
+  // Handle transcript updates (real-time conversation)
+  if (message.type === 'transcript' && message.transcript?.messages) {
+    const messages = message.transcript.messages;
+    const lastAssistantMessage = messages.filter((m: any) => m.role === 'assistant').pop();
+    
+    if (lastAssistantMessage && lastAssistantMessage.content) {
+      const assistantMessage = createAssistantMessage(lastAssistantMessage.content);
+      setMessages(prev => {
+        const exists = isDuplicateMessage(prev, assistantMessage);
+        return exists ? prev : [...prev, assistantMessage];
+      });
+      setIsLoading(false);
+    }
   }
 
   // Handle speech events for text mode (these indicate thinking/processing)
@@ -61,6 +79,12 @@ export const handleVapiMessage = (
       console.log('🤖 Assistant finished thinking');
       setIsLoading(false);
     }
+  }
+
+  // Handle function call responses
+  if (message.type === 'function-call' && message.result) {
+    console.log('🔧 Function call result:', message.result);
+    setIsLoading(false);
   }
 
   // Handle status updates
@@ -92,6 +116,8 @@ export const sendVapiMessage = async (vapiInstance: any, text: string): Promise<
       });
     } else if (vapiInstance.sendMessage) {
       await vapiInstance.sendMessage(text);
+    } else if (vapiInstance.say) {
+      await vapiInstance.say(text);
     } else {
       throw new Error('No send method available on VAPI instance');
     }

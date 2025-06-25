@@ -1,6 +1,5 @@
-
 import { useEffect, useState, useCallback } from 'react';
-import { Button } from '@/components/ui/button';
+import { VapiManager } from '@/utils/vapiManager';
 
 export default function VapiAssistant() {
   const [vapiInstance, setVapiInstance] = useState<any>(null);
@@ -11,78 +10,34 @@ export default function VapiAssistant() {
   const apiKey = "9bac5b6f-d901-4a44-9d24-9e0730757aa4";
 
   useEffect(() => {
-    const loadVapiScript = () => {
-      return new Promise((resolve, reject) => {
-        // Check if script is already loaded
-        if (window.vapiSDK) {
-          resolve(window.vapiSDK);
-          return;
-        }
-
-        const script = document.createElement('script');
-        script.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-        script.defer = true;
-        script.async = true;
-
-        script.onload = () => {
-          console.log('🎙️ Vapi script loaded for VOICE');
-          resolve(window.vapiSDK);
-        };
-
-        script.onerror = () => {
-          console.error('❌ Failed to load Vapi script for VOICE');
-          reject(new Error('Failed to load Vapi script'));
-        };
-
-        document.head.appendChild(script);
-      });
-    };
-
     const initializeVapi = async () => {
       try {
-        await loadVapiScript();
-        
-        if (window.vapiSDK) {
-          console.log('🎙️ Initializing Vapi for VOICE with config:', {
-            apiKey: apiKey ? '***' + apiKey.slice(-4) : 'missing',
-            assistant: assistantId,
-            config: {
-              show: false,
-              position: "bottom-right",
-            }
-          });
+        const manager = VapiManager.getInstance({ assistantId, apiKey });
+        const voiceInstance = await manager.getVoiceInstance();
 
-          const voiceInstance = window.vapiSDK.run({
-            apiKey: apiKey,
-            assistant: assistantId, // Pass as string directly, not as object
-            config: {
-              show: false,
-              position: "bottom-right",
-            },
-          });
+        // Set up event listeners for VOICE only
+        voiceInstance.on('call-start', () => {
+          console.log('🎙️ VOICE Call started');
+          setCallState('connected');
+        });
 
-          // Set up event listeners for VOICE only
-          voiceInstance.on('call-start', () => {
-            console.log('🎙️ VOICE Call started');
-            setCallState('connected');
-          });
+        voiceInstance.on('call-end', () => {
+          console.log('🎙️ VOICE Call ended');
+          setCallState('idle');
+        });
 
-          voiceInstance.on('call-end', () => {
-            console.log('🎙️ VOICE Call ended');
+        voiceInstance.on('error', (error: any) => {
+          console.error('🎙️ VOICE Vapi error:', error);
+          if (error.error?.type === 'permissions') {
+            console.log('🎙️ Microphone permission denied, but continuing...');
+            // Don't set to idle immediately, let the call continue
+          } else {
             setCallState('idle');
-          });
+          }
+        });
 
-          voiceInstance.on('error', (error: any) => {
-            console.error('🎙️ VOICE Vapi error:', error);
-            setCallState('idle');
-          });
-
-          setVapiInstance(voiceInstance);
-          // Store VOICE instance in a different global variable
-          window.vapiVoiceInstance = voiceInstance;
-          window.vapiAssistantId = assistantId;
-          console.log('✅ VOICE Vapi initialized successfully and stored in window.vapiVoiceInstance');
-        }
+        setVapiInstance(voiceInstance);
+        console.log('✅ VOICE Vapi initialized successfully');
       } catch (error) {
         console.error('❌ Failed to initialize VOICE Vapi:', error);
       } finally {
@@ -102,13 +57,22 @@ export default function VapiAssistant() {
     try {
       setCallState('connecting');
       console.log('🎙️ Starting VOICE call...');
+      
+      // Request microphone permission first
+      const manager = VapiManager.getInstance({ assistantId, apiKey });
+      const hasPermission = await manager.requestMicrophonePermission();
+      
+      if (!hasPermission) {
+        console.warn('🎙️ Microphone permission denied, but attempting call anyway...');
+      }
+      
       await vapiInstance.start();
       console.log('✅ VOICE Call started successfully');
     } catch (error) {
       console.error('❌ Failed to start VOICE call:', error);
       setCallState('idle');
     }
-  }, [vapiInstance]);
+  }, [vapiInstance, assistantId, apiKey]);
 
   const endCall = useCallback(async () => {
     if (!vapiInstance) return;
@@ -147,19 +111,19 @@ export default function VapiAssistant() {
 
   if (isLoading) {
     return (
-      <Button disabled className="mb-4">
+      <button disabled className="mb-4">
         Loading AI Assistant...
-      </Button>
+      </button>
     );
   }
 
   return (
-    <Button 
+    <button 
       onClick={handleButtonClick}
       disabled={callState === 'connecting' || callState === 'ending'}
       className="mb-4"
     >
       {getButtonText()}
-    </Button>
+    </button>
   );
 }

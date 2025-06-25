@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { TextMessage } from '@/types/textMessage';
-import { initializeVapiInstance, startVapiConversation } from '@/utils/vapiInitializer';
+import { VapiManager } from '@/utils/vapiManager';
 import { handleVapiMessage, sendVapiMessage, createUserMessage } from '@/utils/messageHandlers';
 
 export const useTextVapi = () => {
@@ -23,16 +23,21 @@ export const useTextVapi = () => {
   useEffect(() => {
     const initializeVapi = async () => {
       try {
-        const instance = await initializeVapiInstance({ assistantId, apiKey });
+        const manager = VapiManager.getInstance({ assistantId, apiKey });
+        const instance = await manager.getTextInstance();
         setVapiInstance(instance);
 
-        // Set up event listeners for text messages only
+        // Set up event listeners for text messages
         instance.on('message', (message: any) => {
           handleVapiMessage(message, setMessages, setIsLoading);
         });
 
         instance.on('conversation-update', (message: any) => {
           handleVapiMessage({ ...message, type: 'conversation-update' }, setMessages, setIsLoading);
+        });
+
+        instance.on('transcript', (message: any) => {
+          handleVapiMessage({ ...message, type: 'transcript' }, setMessages, setIsLoading);
         });
 
         instance.on('speech-update', (message: any) => {
@@ -43,6 +48,10 @@ export const useTextVapi = () => {
           handleVapiMessage({ ...message, type: 'status-update' }, setMessages, setIsLoading);
         });
 
+        instance.on('function-call', (message: any) => {
+          handleVapiMessage({ ...message, type: 'function-call' }, setMessages, setIsLoading);
+        });
+
         instance.on('error', (error: any) => {
           console.error('❌ Text VAPI error:', error);
           setError(error.message || 'Text messaging error');
@@ -50,10 +59,20 @@ export const useTextVapi = () => {
         });
 
         // Start the text conversation
-        await startVapiConversation(instance, assistantId);
+        try {
+          if (instance.send) {
+            await instance.send({
+              type: 'conversation-start',
+              assistant: assistantId
+            });
+            console.log('✅ Text conversation initiated');
+          }
+        } catch (err: any) {
+          console.log('Could not start conversation automatically:', err.message);
+        }
 
       } catch (error: any) {
-        console.error('❌ Failed to initialize VAPI:', error);
+        console.error('❌ Failed to initialize text VAPI:', error);
         setError(error.message);
       }
     };
