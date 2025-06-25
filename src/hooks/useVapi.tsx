@@ -47,13 +47,14 @@ export const useVapi = () => {
 
         voiceInstance.on('error', (error: any) => {
           console.error('🎙️ VOICE: Error occurred:', error);
+          
           if (error.error?.type === 'permissions' || error.message?.includes('permission')) {
             setError('Microphone permission denied. Please allow microphone access and try again.');
-            setCallState('error');
           } else {
             setError(error.message || 'Call failed');
-            setCallState('error');
           }
+          setCallState('error');
+          setIsAgentSpeaking(false);
         });
 
         setVapiInstance(voiceInstance);
@@ -67,30 +68,6 @@ export const useVapi = () => {
     };
 
     initializeVapi();
-  }, []);
-
-  const requestMicrophonePermission = useCallback(async () => {
-    try {
-      console.log('🎙️ VOICE: Requesting microphone permission...');
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      console.log('✅ VOICE: Microphone permission granted');
-      
-      // Stop the stream immediately as we just needed permission
-      stream.getTracks().forEach(track => track.stop());
-      return true;
-    } catch (error: any) {
-      console.error('❌ VOICE: Microphone permission denied:', error);
-      
-      if (error.name === 'NotAllowedError') {
-        setError('Please allow microphone access in your browser settings and try again.');
-      } else if (error.name === 'NotFoundError') {
-        setError('No microphone found. Please connect a microphone and try again.');
-      } else {
-        setError(`Microphone error: ${error.message}`);
-      }
-      
-      return false;
-    }
   }, []);
 
   const startCall = useCallback(async () => {
@@ -107,9 +84,11 @@ export const useVapi = () => {
       setError(null);
       
       // Request microphone permission first
-      const hasPermission = await requestMicrophonePermission();
+      console.log('🎙️ VOICE: Requesting microphone permission...');
+      const hasPermission = await VapiManager.requestMicrophonePermission();
       
       if (!hasPermission) {
+        setError('Microphone permission is required for voice calls');
         setCallState('error');
         return;
       }
@@ -123,7 +102,7 @@ export const useVapi = () => {
       setError(err.message || 'Failed to start call');
       setCallState('error');
     }
-  }, [vapiInstance, assistantId, requestMicrophonePermission]);
+  }, [vapiInstance, assistantId]);
 
   const endCall = useCallback(async () => {
     if (!vapiInstance) return;

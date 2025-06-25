@@ -25,31 +25,26 @@ export class VapiManager {
     }
   }
 
-  static async createTextInstance(config: VapiManagerConfig): Promise<any> {
-    console.log('🔤 Creating TEXT instance with config:', config);
-    
-    try {
-      const textInstance = new Vapi(config.apiKey);
-      console.log('✅ Text instance created successfully');
-      
-      // Store on window for debugging
-      (window as any).vapiTextInstance = textInstance;
-      console.log('🔤 Text instance stored on window.vapiTextInstance');
-      
-      return textInstance;
-    } catch (error) {
-      console.error('❌ Failed to create text instance:', error);
-      throw new Error(`Failed to create text instance: ${error}`);
-    }
-  }
-
   static async requestMicrophonePermission(): Promise<boolean> {
     try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
+      console.log('🎙️ Requesting microphone permission...');
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       console.log('✅ Microphone permission granted');
+      
+      // Stop the stream immediately as we just needed permission
+      stream.getTracks().forEach(track => track.stop());
       return true;
-    } catch (error) {
-      console.warn('❌ Microphone permission denied:', error);
+    } catch (error: any) {
+      console.error('❌ Microphone permission denied:', error);
+      
+      if (error.name === 'NotAllowedError') {
+        console.error('User denied microphone access');
+      } else if (error.name === 'NotFoundError') {
+        console.error('No microphone found');
+      } else {
+        console.error('Microphone error:', error.message);
+      }
+      
       return false;
     }
   }

@@ -5,16 +5,51 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { useTextVapi } from "@/hooks/useTextVapi";
+
+interface Message {
+  id: string;
+  text: string;
+  sender: 'user' | 'assistant';
+  timestamp: Date;
+}
 
 export default function ChatWidget() {
   const [message, setMessage] = useState("");
-  const { messages, isLoading, error, sendMessage } = useTextVapi();
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      text: "Hello! I'm Morgan, your ACME Realty virtual agent. What's your name?",
+      sender: 'assistant',
+      timestamp: new Date()
+    }
+  ]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      sendMessage(message);
+      // Add user message
+      const userMessage: Message = {
+        id: `user-${Date.now()}`,
+        text: message,
+        sender: 'user',
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, userMessage]);
       setMessage("");
+      setIsLoading(true);
+
+      // Simulate response for now (will be replaced with different API)
+      setTimeout(() => {
+        const assistantMessage: Message = {
+          id: `assistant-${Date.now()}`,
+          text: "Thank you for your message! Text messaging will be connected to a different service soon.",
+          sender: 'assistant',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, assistantMessage]);
+        setIsLoading(false);
+      }, 1000);
     }
   };
 
@@ -66,13 +101,6 @@ export default function ChatWidget() {
                   <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                   <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                 </div>
-              </div>
-            </div>
-          )}
-          {error && (
-            <div className="flex justify-center">
-              <div className="text-xs text-red-500 bg-red-50 dark:bg-red-900/20 px-3 py-1 rounded-full">
-                {error}
               </div>
             </div>
           )}
