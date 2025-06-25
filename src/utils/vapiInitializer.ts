@@ -3,8 +3,7 @@ import { VapiConfig } from '@/types/textMessage';
 import { VapiManager } from './vapiManager';
 
 export const initializeVapiInstance = async (config: VapiConfig): Promise<any> => {
-  const manager = VapiManager.getInstance(config);
-  return await manager.getTextInstance();
+  return await VapiManager.createTextInstance(config);
 };
 
 export const startVapiConversation = async (vapiInstance: any, assistantId: string) => {
