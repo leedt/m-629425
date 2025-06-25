@@ -22,57 +22,75 @@ export const useTextVapi = () => {
 
   useEffect(() => {
     const initializeVapi = async () => {
+      console.log('🔤 TEXT: Starting initialization...');
+      
       try {
-        const manager = VapiManager.getInstance({ assistantId, apiKey });
-        const instance = await manager.getTextInstance();
-        setVapiInstance(instance);
+        const textInstance = await VapiManager.createTextInstance({ assistantId, apiKey });
+        
+        console.log('🔤 TEXT: Setting up event listeners...');
 
         // Set up event listeners for text messages
-        instance.on('message', (message: any) => {
+        textInstance.on('message', (message: any) => {
+          console.log('🔤 TEXT: Received message event:', message);
           handleVapiMessage(message, setMessages, setIsLoading);
         });
 
-        instance.on('conversation-update', (message: any) => {
+        textInstance.on('conversation-update', (message: any) => {
+          console.log('🔤 TEXT: Received conversation-update event:', message);
           handleVapiMessage({ ...message, type: 'conversation-update' }, setMessages, setIsLoading);
         });
 
-        instance.on('transcript', (message: any) => {
+        textInstance.on('transcript', (message: any) => {
+          console.log('🔤 TEXT: Received transcript event:', message);
           handleVapiMessage({ ...message, type: 'transcript' }, setMessages, setIsLoading);
         });
 
-        instance.on('speech-update', (message: any) => {
+        textInstance.on('speech-update', (message: any) => {
+          console.log('🔤 TEXT: Received speech-update event:', message);
           handleVapiMessage({ ...message, type: 'speech-update' }, setMessages, setIsLoading);
         });
 
-        instance.on('status-update', (message: any) => {
+        textInstance.on('status-update', (message: any) => {
+          console.log('🔤 TEXT: Received status-update event:', message);
           handleVapiMessage({ ...message, type: 'status-update' }, setMessages, setIsLoading);
         });
 
-        instance.on('function-call', (message: any) => {
+        textInstance.on('function-call', (message: any) => {
+          console.log('🔤 TEXT: Received function-call event:', message);
           handleVapiMessage({ ...message, type: 'function-call' }, setMessages, setIsLoading);
         });
 
-        instance.on('error', (error: any) => {
-          console.error('❌ Text VAPI error:', error);
+        textInstance.on('error', (error: any) => {
+          console.error('❌ TEXT: Error occurred:', error);
           setError(error.message || 'Text messaging error');
           setIsLoading(false);
         });
 
+        setVapiInstance(textInstance);
+        console.log('🔤 TEXT: Instance ready and stored');
+
         // Start the text conversation
         try {
-          if (instance.send) {
-            await instance.send({
+          if (textInstance.send) {
+            console.log('🔤 TEXT: Starting conversation...');
+            await textInstance.send({
               type: 'conversation-start',
               assistant: assistantId
             });
-            console.log('✅ Text conversation initiated');
+            console.log('✅ TEXT: Conversation initiated');
           }
         } catch (err: any) {
-          console.log('Could not start conversation automatically:', err.message);
+          console.log('🔤 TEXT: Could not start conversation automatically:', err.message);
         }
 
+        // Debug logging
+        console.log('🔍 TEXT DEBUG:');
+        console.log('Voice:', (window as any).vapiVoiceInstance);
+        console.log('Text:', (window as any).vapiTextInstance);
+        console.log('Same?', (window as any).vapiVoiceInstance === (window as any).vapiTextInstance);
+
       } catch (error: any) {
-        console.error('❌ Failed to initialize text VAPI:', error);
+        console.error('❌ TEXT: Failed to initialize:', error);
         setError(error.message);
       }
     };
@@ -90,6 +108,8 @@ export const useTextVapi = () => {
       setIsLoading(true);
       setError(null);
 
+      console.log('🔤 TEXT: Sending message:', text);
+
       // Add user message to UI immediately
       const userMessage = createUserMessage(text);
       setMessages(prev => [...prev, userMessage]);
@@ -97,7 +117,7 @@ export const useTextVapi = () => {
       await sendVapiMessage(vapiInstance, text);
 
     } catch (error: any) {
-      console.error('❌ Failed to send message:', error);
+      console.error('❌ TEXT: Failed to send message:', error);
       setError(`Failed to send: ${error.message}`);
       setIsLoading(false);
     }

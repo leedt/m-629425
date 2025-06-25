@@ -15,9 +15,12 @@ export const useVapi = () => {
 
   useEffect(() => {
     const initializeVapi = async () => {
+      console.log('🎙️ VOICE: Starting initialization...');
+      
       try {
-        const manager = VapiManager.getInstance({ assistantId, apiKey });
-        const voiceInstance = await manager.getVoiceInstance();
+        const voiceInstance = await VapiManager.createVoiceInstance({ assistantId, apiKey });
+        
+        console.log('🎙️ VOICE: Setting up event listeners...');
 
         // Hide any Vapi buttons that might appear
         const hideVapiButtons = () => {
@@ -33,29 +36,29 @@ export const useVapi = () => {
         
         // Set up event listeners for VOICE only
         voiceInstance.on('call-start', () => {
-          console.log('🎙️ VOICE Call started');
+          console.log('🎙️ VOICE: Call started');
           setCallState('connected');
           setError(null);
         });
 
         voiceInstance.on('call-end', () => {
-          console.log('🎙️ VOICE Call ended');
+          console.log('🎙️ VOICE: Call ended');
           setCallState('idle');
           setIsAgentSpeaking(false);
         });
 
         voiceInstance.on('speech-start', () => {
-          console.log('🎙️ VOICE Agent speaking');
+          console.log('🎙️ VOICE: Agent speaking');
           setIsAgentSpeaking(true);
         });
 
         voiceInstance.on('speech-end', () => {
-          console.log('🎙️ VOICE Agent stopped speaking');
+          console.log('🎙️ VOICE: Agent stopped speaking');
           setIsAgentSpeaking(false);
         });
 
         voiceInstance.on('error', (error: any) => {
-          console.error('🎙️ VOICE Vapi error:', error);
+          console.error('🎙️ VOICE: Error occurred:', error);
           if (error.error?.type === 'permissions') {
             setError('Microphone permission denied. Please allow microphone access and try again.');
             setCallState('error');
@@ -66,9 +69,16 @@ export const useVapi = () => {
         });
 
         setVapiInstance(voiceInstance);
-        console.log('🎙️ VOICE Vapi instance initialized');
+        console.log('🎙️ VOICE: Instance ready and stored');
+        
+        // Debug logging
+        console.log('🔍 VOICE DEBUG:');
+        console.log('Voice:', (window as any).vapiVoiceInstance);
+        console.log('Text:', (window as any).vapiTextInstance);
+        console.log('Same?', (window as any).vapiVoiceInstance === (window as any).vapiTextInstance);
+        
       } catch (error: any) {
-        console.error('❌ Failed to initialize voice VAPI:', error);
+        console.error('❌ VOICE: Failed to initialize:', error);
         setError('Failed to initialize voice assistant');
         setCallState('error');
       }
@@ -78,10 +88,10 @@ export const useVapi = () => {
   }, []);
 
   const startCall = useCallback(async () => {
-    console.log('🎙️ Starting VOICE call...');
+    console.log('🎙️ VOICE: Starting call...');
     
     if (!vapiInstance) {
-      console.error('🎙️ VOICE Vapi instance not found');
+      console.error('🎙️ VOICE: Instance not found');
       setError('Voice assistant not initialized');
       return;
     }
@@ -91,8 +101,7 @@ export const useVapi = () => {
       setError(null);
       
       // Request microphone permission first
-      const manager = VapiManager.getInstance({ assistantId, apiKey });
-      const hasPermission = await manager.requestMicrophonePermission();
+      const hasPermission = await VapiManager.requestMicrophonePermission();
       
       if (!hasPermission) {
         setError('Microphone permission is required for voice calls');
@@ -100,27 +109,27 @@ export const useVapi = () => {
         return;
       }
       
-      console.log('🎙️ Attempting to start VOICE call...');
+      console.log('🎙️ VOICE: Starting call with assistant:', assistantId);
       await vapiInstance.start(assistantId);
-      console.log('✅ VOICE Call started successfully');
+      console.log('✅ VOICE: Call started successfully');
       
     } catch (err: any) {
-      console.error('❌ Failed to start VOICE call:', err);
+      console.error('❌ VOICE: Failed to start call:', err);
       setError(err.message || 'Failed to start call');
       setCallState('error');
     }
-  }, [vapiInstance, assistantId, apiKey]);
+  }, [vapiInstance, assistantId]);
 
   const endCall = useCallback(async () => {
     if (!vapiInstance) return;
 
     try {
       setCallState('ending');
-      console.log('🎙️ Ending VOICE call...');
+      console.log('🎙️ VOICE: Ending call...');
       await vapiInstance.stop();
-      console.log('✅ VOICE Call ended successfully');
+      console.log('✅ VOICE: Call ended successfully');
     } catch (err: any) {
-      console.error('❌ Failed to end VOICE call:', err);
+      console.error('❌ VOICE: Failed to end call:', err);
       setError(err.message || 'Failed to end call');
       setCallState('error');
     }
