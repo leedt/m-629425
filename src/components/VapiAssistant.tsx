@@ -1,6 +1,6 @@
 
 import { useEffect, useState, useCallback } from 'react';
-import { VapiManager } from '@/utils/vapiManager';
+import Vapi from '@vapi-ai/web';
 
 export default function VapiAssistant() {
   const [vapiInstance, setVapiInstance] = useState<any>(null);
@@ -10,11 +10,27 @@ export default function VapiAssistant() {
   const assistantId = "64e64beb-2258-4f1a-8f29-2fa8eada149f";
   const apiKey = "9bac5b6f-d901-4a44-9d24-9e0730757aa4";
 
+  // Request microphone permission helper
+  const requestMicrophonePermission = async (): Promise<boolean> => {
+    try {
+      console.log('🎙️ LEGACY VapiAssistant: Requesting microphone permission...');
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      console.log('✅ LEGACY VapiAssistant: Microphone permission granted');
+      
+      // Stop the stream immediately as we just needed permission
+      stream.getTracks().forEach(track => track.stop());
+      return true;
+    } catch (error: any) {
+      console.error('❌ LEGACY VapiAssistant: Microphone permission denied:', error);
+      return false;
+    }
+  };
+
   useEffect(() => {
     const initializeVapi = async () => {
       try {
         console.log('🎙️ LEGACY VapiAssistant: Starting initialization...');
-        const voiceInstance = await VapiManager.createVoiceInstance({ assistantId, apiKey });
+        const voiceInstance = new Vapi(apiKey);
 
         // Set up event listeners for VOICE only
         voiceInstance.on('call-start', () => {
@@ -60,7 +76,7 @@ export default function VapiAssistant() {
       console.log('🎙️ LEGACY VapiAssistant: Starting call...');
       
       // Request microphone permission first
-      const hasPermission = await VapiManager.requestMicrophonePermission();
+      const hasPermission = await requestMicrophonePermission();
       
       if (!hasPermission) {
         console.warn('🎙️ LEGACY VapiAssistant: Microphone permission denied, but attempting call anyway...');
