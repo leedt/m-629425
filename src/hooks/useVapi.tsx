@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Vapi from '@vapi-ai/web';
 
-export type CallState = 'idle' | 'connecting' | 'connected' | 'ending' | 'error';
+export type CallState = 'idle' | 'connecting' | 'connected' | 'ending' | 'error' | 'permission-denied';
 
 export const useVapi = () => {
   const [callState, setCallState] = useState<CallState>('idle');
@@ -13,10 +13,23 @@ export const useVapi = () => {
   const assistantId = "64e64beb-2258-4f1a-8f29-2fa8eada149f";
   const apiKey = "9bac5b6f-d901-4a44-9d24-9e0730757aa4";
 
-  // Request microphone permission helper
+  // Request microphone permission helper with better error handling
   const requestMicrophonePermission = async (): Promise<boolean> => {
     try {
       console.log('🎙️ Requesting microphone permission...');
+      
+      // Check if permissions API is available
+      if (navigator.permissions) {
+        const permission = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+        console.log('🎙️ Current microphone permission state:', permission.state);
+        
+        if (permission.state === 'denied') {
+          setError('Microphone access is blocked. Please click the microphone icon in your browser\'s address bar and allow access, then try again.');
+          setCallState('permission-denied');
+          return false;
+        }
+      }
+      
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       console.log('✅ Microphone permission granted');
       
@@ -27,11 +40,14 @@ export const useVapi = () => {
       console.error('❌ Microphone permission denied:', error);
       
       if (error.name === 'NotAllowedError') {
-        console.error('User denied microphone access');
+        setError('Microphone access denied. Please click the microphone icon in your browser\'s address bar, allow access, and try again.');
+        setCallState('permission-denied');
       } else if (error.name === 'NotFoundError') {
-        console.error('No microphone found');
+        setError('No microphone found. Please connect a microphone and try again.');
+        setCallState('error');
       } else {
-        console.error('Microphone error:', error.message);
+        setError(`Microphone error: ${error.message}`);
+        setCallState('error');
       }
       
       return false;
@@ -80,10 +96,11 @@ export const useVapi = () => {
           
           if (error.error?.type === 'permissions' || error.message?.includes('permission')) {
             setError('Microphone permission denied. Please allow microphone access and try again.');
+            setCallState('permission-denied');
           } else {
             setError(error.message || 'Call failed');
+            setCallState('error');
           }
-          setCallState('error');
           setIsAgentSpeaking(false);
         });
 
@@ -118,8 +135,7 @@ export const useVapi = () => {
       const hasPermission = await requestMicrophonePermission();
       
       if (!hasPermission) {
-        setError('Microphone permission is required for voice calls');
-        setCallState('error');
+        // Error already set in requestMicrophonePermission
         return;
       }
       
@@ -150,12 +166,17 @@ export const useVapi = () => {
   }, [vapiInstance]);
 
   const toggleCall = useCallback(async () => {
-    if (callState === 'idle' || callState === 'error') {
+    if (callState === 'idle' || callState === 'error' || callState === 'permission-denied') {
       await startCall();
     } else if (callState === 'connected') {
       await endCall();
     }
   }, [callState, startCall, endCall]);
+
+  const resetError = useCallback(() => {
+    setError(null);
+    setCallState('idle');
+  }, []);
 
   return {
     callState,
@@ -164,6 +185,7 @@ export const useVapi = () => {
     startCall,
     endCall,
     toggleCall,
+    resetError,
     isCallActive: callState === 'connected' || callState === 'connecting',
   };
 };
