@@ -23,37 +23,73 @@ export class VapiManager {
   }
 
   async ensureScriptLoaded(): Promise<void> {
-    if (this.isScriptLoaded && window.Vapi) {
+    if (this.isScriptLoaded && this.getVapiConstructor()) {
       return;
     }
 
     return new Promise((resolve, reject) => {
-      let retryCount = 0;
-      const maxRetries = 30;
-      
-      const checkVapi = () => {
-        console.log(`🔍 Checking for VAPI SDK (attempt ${retryCount + 1}/${maxRetries})...`);
-        
-        const VapiConstructor = window.Vapi || window.vapiSDK?.Vapi || (window as any).VapiSDK;
-        
-        if (VapiConstructor) {
-          console.log('✅ VAPI SDK found');
-          this.isScriptLoaded = true;
-          resolve();
-        } else {
-          retryCount++;
-          if (retryCount >= maxRetries) {
-            console.error('❌ VAPI SDK failed to load after maximum retries');
-            reject(new Error('VAPI SDK could not be loaded'));
-            return;
-          }
-          
-          setTimeout(checkVapi, 200);
-        }
-      };
-
-      setTimeout(checkVapi, 500);
+      // Check if script is already in DOM
+      const existingScript = document.querySelector('script[src*="vapi"]');
+      if (!existingScript) {
+        console.log('📦 VAPI script not found, loading...');
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@vapi-ai/web@latest/dist/index.js';
+        script.async = true;
+        script.onload = () => {
+          console.log('📦 VAPI script loaded');
+          this.waitForVapi(resolve, reject);
+        };
+        script.onerror = () => {
+          console.error('❌ Failed to load VAPI script');
+          reject(new Error('Failed to load VAPI script'));
+        };
+        document.head.appendChild(script);
+      } else {
+        console.log('📦 VAPI script already in DOM, waiting for SDK...');
+        this.waitForVapi(resolve, reject);
+      }
     });
+  }
+
+  private waitForVapi(resolve: () => void, reject: (error: Error) => void): void {
+    let retryCount = 0;
+    const maxRetries = 50;
+    
+    const checkVapi = () => {
+      console.log(`🔍 Checking for VAPI SDK (attempt ${retryCount + 1}/${maxRetries})...`);
+      
+      const VapiConstructor = this.getVapiConstructor();
+      
+      if (VapiConstructor) {
+        console.log('✅ VAPI SDK found:', typeof VapiConstructor);
+        this.isScriptLoaded = true;
+        resolve();
+      } else {
+        retryCount++;
+        if (retryCount >= maxRetries) {
+          console.error('❌ VAPI SDK failed to load after maximum retries');
+          console.log('Available on window:', Object.keys(window).filter(key => key.toLowerCase().includes('vapi')));
+          reject(new Error('VAPI SDK could not be loaded'));
+          return;
+        }
+        
+        setTimeout(checkVapi, 100);
+      }
+    };
+
+    // Start checking immediately
+    checkVapi();
+  }
+
+  private getVapiConstructor(): any {
+    // Try different possible locations for the VAPI constructor
+    return (
+      (window as any).Vapi || 
+      (window as any).VapiSDK || 
+      (window as any).vapiSDK?.Vapi ||
+      (window as any).VAPI ||
+      null
+    );
   }
 
   async getTextInstance(): Promise<any> {
@@ -66,24 +102,28 @@ export class VapiManager {
     try {
       console.log('🔤 Creating text-only VAPI instance...');
       
-      const VapiConstructor = window.Vapi || window.vapiSDK?.Vapi || (window as any).VapiSDK;
+      const VapiConstructor = this.getVapiConstructor();
       
+      if (!VapiConstructor) {
+        throw new Error('VAPI constructor not found');
+      }
+
+      console.log('🔤 VAPI Constructor type:', typeof VapiConstructor);
+      
+      // Try different initialization methods
       if (typeof VapiConstructor === 'function') {
         this.textInstance = new VapiConstructor(this.config.apiKey);
-      } else if (VapiConstructor?.run) {
-        this.textInstance = VapiConstructor.run({
+        console.log('✅ Text instance created with constructor');
+      } else if (VapiConstructor.create) {
+        this.textInstance = VapiConstructor.create({
           apiKey: this.config.apiKey,
-          assistant: this.config.assistantId,
-          config: { 
-            mode: 'text-only',
-            show: false
-          }
+          mode: 'text'
         });
+        console.log('✅ Text instance created with create method');
       } else {
-        throw new Error('No valid VAPI constructor found');
+        throw new Error('No valid VAPI initialization method found');
       }
       
-      console.log('✅ Text VAPI instance created');
       return this.textInstance;
       
     } catch (error: any) {
@@ -102,28 +142,28 @@ export class VapiManager {
     try {
       console.log('🎙️ Creating voice VAPI instance...');
       
-      const VapiConstructor = window.Vapi || window.vapiSDK?.Vapi || (window as any).VapiSDK;
+      const VapiConstructor = this.getVapiConstructor();
       
-      if (VapiConstructor?.run) {
-        this.voiceInstance = VapiConstructor.run({
-          apiKey: this.config.apiKey,
-          assistant: this.config.assistantId,
-          config: {
-            show: false,
-            position: "bottom-right",
-          },
-        });
-      } else if (typeof VapiConstructor === 'function') {
+      if (!VapiConstructor) {
+        throw new Error('VAPI constructor not found');
+      }
+
+      console.log('🎙️ VAPI Constructor type:', typeof VapiConstructor);
+      
+      // Try different initialization methods
+      if (typeof VapiConstructor === 'function') {
         this.voiceInstance = new VapiConstructor(this.config.apiKey);
+        console.log('✅ Voice instance created with constructor');
+      } else if (VapiConstructor.create) {
+        this.voiceInstance = VapiConstructor.create({
+          apiKey: this.config.apiKey,
+          assistant: this.config.assistantId
+        });
+        console.log('✅ Voice instance created with create method');
       } else {
-        throw new Error('No valid VAPI constructor found');
+        throw new Error('No valid VAPI initialization method found');
       }
       
-      // Store globally for other components
-      window.vapiVoiceInstance = this.voiceInstance;
-      window.vapiAssistantId = this.config.assistantId;
-      
-      console.log('✅ Voice VAPI instance created');
       return this.voiceInstance;
       
     } catch (error: any) {
