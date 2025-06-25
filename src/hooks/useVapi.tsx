@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import Vapi from '@vapi-ai/web';
 
@@ -13,23 +12,12 @@ export const useVapi = () => {
   const assistantId = "64e64beb-2258-4f1a-8f29-2fa8eada149f";
   const apiKey = "9bac5b6f-d901-4a44-9d24-9e0730757aa4";
 
-  // Request microphone permission helper with better error handling
+  // Request microphone permission helper - always attempt getUserMedia to trigger prompt
   const requestMicrophonePermission = async (): Promise<boolean> => {
     try {
       console.log('🎙️ Requesting microphone permission...');
       
-      // Check if permissions API is available
-      if (navigator.permissions) {
-        const permission = await navigator.permissions.query({ name: 'microphone' as PermissionName });
-        console.log('🎙️ Current microphone permission state:', permission.state);
-        
-        if (permission.state === 'denied') {
-          setError('Microphone access is blocked. Please click the microphone icon in your browser\'s address bar and allow access, then try again.');
-          setCallState('permission-denied');
-          return false;
-        }
-      }
-      
+      // Always attempt getUserMedia - this is what triggers the browser permission prompt
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       console.log('✅ Microphone permission granted');
       
